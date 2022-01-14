@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{5F07BA2B-4A13-0683-F0E8-C59B7C2B9AAF}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "PPGame",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
