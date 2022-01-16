@@ -28,6 +28,6 @@ public:
 	virtual void PPInitComponent(){ }
 
 	//==============================================================//
-	UPROPERTY(EditDefaultsOnly, Category="PP")
+	UPROPERTY(VisibleDefaultsOnly, Category="PP")
 	EPPCompSpawnCondition CompSpawnCondition;
 };
