@@ -32,6 +32,7 @@ void APPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME_CONDITION(APPCharacter, ViewMode, COND_SkipOwner);
 	DOREPLIFETIME_CONDITION(APPCharacter, RotationMode, COND_SkipOwner);
 	DOREPLIFETIME_CONDITION(APPCharacter, OverlayState, COND_SkipOwner);
+	DOREPLIFETIME_CONDITION(APPCharacter, AimPitch, COND_SkipOwner);
 }
 
 void APPCharacter::BeginPlay()
@@ -48,6 +49,15 @@ void APPCharacter::Tick(float DeltaSeconds)
 	if (MovementState == EPPMovementState::Grounded)
 	{
 		UpdateCharacterMovement();
+	}
+	
+	if (IsLocallyControlled())
+	{
+		AimPitch = Cast<APlayerController>(GetController())->PlayerCameraManager->ViewTarget.POV.Rotation.Pitch;
+		if (GetNetMode() == NM_Client)
+		{
+			Server_SetAimPitch(AimPitch);
+		}
 	}
 }
 
@@ -94,6 +104,29 @@ void APPCharacter::OnOverlayStateChanged(const EPPOverlayState PreOverlayState)
 	if (IsValid(MainAnimInstance))
 	{
 		MainAnimInstance->GetAnimInfo().OverlayState = OverlayState;
+	}
+}
+
+void APPCharacter::SetMovementState(const EPPMovementState NewMovementState, bool bForce)
+{
+	if (bForce || MovementState != NewMovementState)
+	{
+		const EPPMovementState Prev = MovementState;
+		MovementState = NewMovementState;
+		OnMovementStateChanged(Prev);
+	}
+}
+
+void APPCharacter::OnMovementStateChanged(const EPPMovementState NewMovementState)
+{
+	if (MainAnimInstance)
+	{
+		MainAnimInstance->GetAnimInfo().MovementState = MovementState;
+	}
+
+	if (CameraBehavior)
+	{
+		CameraBehavior->MovementState = MovementState;
 	}
 }
 
@@ -203,6 +236,23 @@ void APPCharacter::ForceUpdateAnimState()
 	SetRotationMode(EPPRotationMode::LookingDirection, true);
 	SetGait(EPPGait::Idle, true);
 	SetOverlayState(EPPOverlayState::Pistol, true);
+	SetMovementState(EPPMovementState::Grounded, true);
+}
+
+void APPCharacter::Server_SetAimPitch_Implementation(float NewAimPitch)
+{
+	AimPitch = NewAimPitch;
+}
+
+
+void APPCharacter::OnRep_MovementState(EPPMovementState PreMovementState)
+{
+	OnMovementStateChanged(PreMovementState);
+}
+
+void APPCharacter::Server_SetMovementState_Implementation(const EPPMovementState NewMovementState, bool bForce)
+{
+	SetMovementState(NewMovementState, bForce);
 }
 
 void APPCharacter::OnRep_OverlayState(EPPOverlayState PreOverlayState)

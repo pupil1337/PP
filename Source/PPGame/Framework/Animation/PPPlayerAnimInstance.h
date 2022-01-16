@@ -19,6 +19,9 @@ struct FPPAnimInfo
 	EPPOverlayState OverlayState = EPPOverlayState::Pistol;
 
 	UPROPERTY(BlueprintReadOnly)
+	EPPMovementState MovementState = EPPMovementState::Grounded;
+
+	UPROPERTY(BlueprintReadOnly)
 	EPPRotationMode RotationMode = EPPRotationMode::LookingDirection;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -29,6 +32,8 @@ struct FPPAnimInfo
 
 	UPROPERTY(BlueprintReadOnly)
 	float MoveDir;
+	UPROPERTY(BlueprintReadOnly)
+	float AimPitch;
 };
 
 class APPCharacter;

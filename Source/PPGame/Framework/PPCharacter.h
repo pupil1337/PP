@@ -61,6 +61,9 @@ public:
 
 	void SetOverlayState(const EPPOverlayState NewOverlayState, bool bForce = false);
 	void OnOverlayStateChanged(const EPPOverlayState PreOverlayState);
+
+	void SetMovementState(const EPPMovementState NewMovementState, bool bForce = false);
+	void OnMovementStateChanged(const EPPMovementState NewMovementState);
 	
 	void SetViewMode(const EPPViewMode NewViewMode, bool bForce = false);
 	void OnViewModeChanged(const EPPViewMode PreViewMode);
@@ -75,6 +78,11 @@ public:
 	void Server_SetOverlayState(const EPPOverlayState NewOverlayState, bool bForce = false);
 	UFUNCTION()
 	void OnRep_OverlayState(EPPOverlayState PreOverlayState);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetMovementState(const EPPMovementState NewMovementState, bool bForce = false);
+	UFUNCTION()
+	void OnRep_MovementState(EPPMovementState PreMovementState);
 	
 	UFUNCTION(Server, Reliable)
 	void Server_SetViewMode(const EPPViewMode NewViewMode, bool bForce = false);
@@ -94,6 +102,9 @@ public:
 	/** Other **/
 	void UpdateCharacterMovement();
 	void ForceUpdateAnimState();
+	FORCEINLINE float GetCameraAimPitch() { return AimPitch; }
+	UFUNCTION(Server, Unreliable)
+	void Server_SetAimPitch(float NewAimPitch);
 	
 protected:
 
@@ -101,17 +112,18 @@ protected:
 	EPPOverlayState OverlayState;
 	UPROPERTY(ReplicatedUsing = OnRep_RotationMode)
 	EPPRotationMode RotationMode;
+	UPROPERTY(ReplicatedUsing = OnRep_MovementState)
+	EPPMovementState MovementState;
+	UPROPERTY()
+	EPPMovementAction MovementAction;
 	UPROPERTY(/*ReplicatedUsing = OnRep_Stance*/)
 	EPPStance Stance;
 	UPROPERTY(ReplicatedUsing = OnRep_ViewMode)
 	EPPViewMode ViewMode;
 	UPROPERTY(/*ReplicatedUsing = OnRep_Gait*/)
 	EPPGait Gait;
-	
-	UPROPERTY()
-	EPPMovementState MovementState;
-	UPROPERTY()
-	EPPMovementAction MovementAction;
+	UPROPERTY(Replicated)
+	float AimPitch;
 	
 	UPROPERTY()
 	UPPPlayerAnimInstance* MainAnimInstance;

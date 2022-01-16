@@ -21,7 +21,7 @@ void UPPPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		PPAnimInfo.Velocity = OwnerPawn->GetCharacterMovement()->Velocity;
 		UpdateMoveDir();
-		
+		PPAnimInfo.AimPitch = OwnerPawn->GetCameraAimPitch();
 	}
 }
 
