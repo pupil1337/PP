@@ -19,7 +19,7 @@ public:
 	virtual void PPInitComponent() override;
 	virtual void ChangeControllerRole() override;
 	
-protected:
 	UFUNCTION()
 	void OnFire(bool Op);
+	
 };

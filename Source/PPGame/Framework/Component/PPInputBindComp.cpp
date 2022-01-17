@@ -130,19 +130,17 @@ void UPPInputBindComp::JumpAction()
 
 void UPPInputBindComp::FirePressedAction()
 {
-	if (GetWorld()->GetTimerManager().IsTimerActive(FireHandle))
-	{
-		return;
-	}
-	
 	OnFire.Broadcast(true);
-	GetWorld()->GetTimerManager().SetTimer(FireHandle, this, &UPPInputBindComp::FirePressedAction, 0.2f, true, 0.0f);
+	
+	if (!GetWorld()->GetTimerManager().IsTimerActive(FireHandle))
+	{
+		GetWorld()->GetTimerManager().SetTimer(FireHandle, this, &UPPInputBindComp::FirePressedAction, 0.02f, true, 0.0f);
+	}
 }
 
 void UPPInputBindComp::FireReleasedAction()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
-	OnFire.Broadcast(false);
 }
 
 void UPPInputBindComp::SwitchCameraMode()
