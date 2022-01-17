@@ -82,3 +82,10 @@ enum class EPPOverlayState : uint8
 	Sniper,
 	Thrower
 };
+
+UENUM()
+enum class EPPCustomAction : uint8
+{
+	None,
+	Fire
+};

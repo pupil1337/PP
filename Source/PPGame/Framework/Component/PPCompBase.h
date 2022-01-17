@@ -16,6 +16,8 @@ enum class EPPCompSpawnCondition: uint8
 	EPPCSC_OnlyOnSimulatedProxy  = 4,
 };
 
+class APPCharacter;
+
 UCLASS(Abstract)
 class PPGAME_API UPPCompBase : public UActorComponent
 {
@@ -25,9 +27,14 @@ public:
 	UPPCompBase();
 	virtual void BeginPlay() override;
 
-	virtual void PPInitComponent(){ }
+	virtual void PPInitComponent();
+	virtual void ChangeControllerRole(){ }
 
 	//==============================================================//
 	UPROPERTY(VisibleDefaultsOnly, Category="PP")
 	EPPCompSpawnCondition CompSpawnCondition;
+
+protected:
+	UPROPERTY()
+	APPCharacter* OwnerPawn;
 };

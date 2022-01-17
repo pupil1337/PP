@@ -6,11 +6,10 @@
 #include "PPCompBase.h"
 #include "PPInputBindComp.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveForward, float, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveRight, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFire, bool, Op);
 
 class UInputComponent;
-class APPCharacter;
+
 /**
  * 
  */
@@ -21,8 +20,7 @@ class PPGAME_API UPPInputBindComp : public UPPCompBase
 public:
 	UPPInputBindComp();
 
-	FOnMoveForward OnMoveForward;
-	FOnMoveRight OnMoveRight;
+	FOnFire OnFire;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	UFUNCTION()
@@ -39,6 +37,12 @@ public:
 	void AimPressedAction();
 	UFUNCTION()
 	void AimReleasedAction();
+	UFUNCTION()
+	void JumpAction();
+	UFUNCTION()
+	void FirePressedAction();
+	UFUNCTION()
+	void FireReleasedAction();
 
 protected:
 	UFUNCTION()
@@ -47,9 +51,7 @@ protected:
 protected:
 	bool bInputBind;
 	FTimerHandle CameraMoveHandle;
-	
-	UPROPERTY()
-	APPCharacter* OwnerPawn;
+	FTimerHandle FireHandle;
 	
 public:
 	

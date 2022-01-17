@@ -4,6 +4,7 @@
 #include "PPPlayerAnimInstance.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PPGame/Framework/PPCharacter.h"
 
@@ -19,7 +20,21 @@ void UPPPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (IsValid(OwnerPawn) && DeltaSeconds > 0.0f)
 	{
+		if (!SimulatedProxyRefresh())
+		{
+			return;
+		}
+		
 		PPAnimInfo.Velocity = OwnerPawn->GetCharacterMovement()->Velocity;
+		if (PPAnimInfo.Velocity.Z > 1.0f || PPAnimInfo.Velocity.Z < -1.0f)
+		{
+			PPAnimInfo.MovementState = EPPMovementState::InAir;
+		}
+		else if (PPAnimInfo.MovementState == EPPMovementState::InAir)
+		{
+			PPAnimInfo.MovementState = EPPMovementState::Grounded;
+		}
+		
 		UpdateMoveDir();
 		PPAnimInfo.AimPitch = OwnerPawn->GetCameraAimPitch();
 	}
@@ -48,4 +63,18 @@ void UPPPlayerAnimInstance::UpdateMoveDir()
 	PPAnimInfo.MoveDir = tNormal.Z < 0.0f ? -angle : angle;
 	
 	LastPos = tCurrPos;
+}
+
+bool UPPPlayerAnimInstance::SimulatedProxyRefresh()
+{
+	if (OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
+	{
+		float tCurrTime = UGameplayStatics::GetTimeSeconds(this);
+		if (tCurrTime - LastRefreshTime < 0.1f)
+		{
+			return false;
+		}
+		LastRefreshTime = tCurrTime;
+	}
+	return true;
 }

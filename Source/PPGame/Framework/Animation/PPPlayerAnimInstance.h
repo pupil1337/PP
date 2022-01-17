@@ -25,6 +25,9 @@ struct FPPAnimInfo
 	EPPRotationMode RotationMode = EPPRotationMode::LookingDirection;
 
 	UPROPERTY(BlueprintReadOnly)
+	EPPCustomAction CustomAction = EPPCustomAction::None;
+	
+	UPROPERTY(BlueprintReadOnly)
 	EPPGait Gait = EPPGait::Idle;
 	
 	UPROPERTY(BlueprintReadOnly)
@@ -61,4 +64,7 @@ protected:
 private:
 	void UpdateMoveDir();
 	FVector LastPos;
+
+	bool SimulatedProxyRefresh();
+	float LastRefreshTime;
 };

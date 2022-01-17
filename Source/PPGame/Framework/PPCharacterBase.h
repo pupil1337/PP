@@ -29,6 +29,7 @@ protected:
 	void CreateFilter(bool& bNeedCreate, bool& bReplicated, bool bPostNetInit, EPPCompSpawnCondition ESpawnCondition);
 	void LinkAndInitAllComps();
 	void LinkAndInitComp(TSubclassOf<UPPCompBase> ClassType);
+	void ChangeControllerRole();
 	
 	UPROPERTY(EditDefaultsOnly, Category="PP|Components")
 	TArray<TSubclassOf<UPPCompBase> > PPCompClasses;

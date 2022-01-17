@@ -28,6 +28,12 @@ void APPCharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	LinkAndInitAllComps();
+	
+	if (IsLocallyControlled())
+	{
+		ChangeControllerRole();
+	}
+	
 }
 
 void APPCharacterBase::CreateAllComps(bool bPostNetInit)
@@ -212,5 +218,16 @@ void APPCharacterBase::LinkAndInitComp(TSubclassOf<UPPCompBase> ClassType)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ClassType %s is NULL???"));
+	}
+}
+
+void APPCharacterBase::ChangeControllerRole()
+{
+	for (auto& it: PPComps)
+	{
+		if (IsValid(it))
+		{
+			it->ChangeControllerRole();
+		}
 	}
 }

@@ -62,6 +62,9 @@ public:
 	void SetOverlayState(const EPPOverlayState NewOverlayState, bool bForce = false);
 	void OnOverlayStateChanged(const EPPOverlayState PreOverlayState);
 
+	void SetCustomAction(const EPPCustomAction NewCustonAction, bool bForce = false);
+	void OnCustActionChanged(const EPPCustomAction PreCustomAction);
+	
 	void SetMovementState(const EPPMovementState NewMovementState, bool bForce = false);
 	void OnMovementStateChanged(const EPPMovementState NewMovementState);
 	
@@ -78,6 +81,11 @@ public:
 	void Server_SetOverlayState(const EPPOverlayState NewOverlayState, bool bForce = false);
 	UFUNCTION()
 	void OnRep_OverlayState(EPPOverlayState PreOverlayState);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCustomAction(const EPPCustomAction NewCustonAction, bool bForce = false);
+	UFUNCTION()
+	void OnRep_CustomAction(EPPCustomAction PreCustomAction);
 
 	UFUNCTION(Server, Reliable)
 	void Server_SetMovementState(const EPPMovementState NewMovementState, bool bForce = false);
@@ -110,6 +118,8 @@ protected:
 
 	UPROPERTY(ReplicatedUsing = OnRep_OverlayState)
 	EPPOverlayState OverlayState;
+	UPROPERTY(ReplicatedUsing = OnRep_CustomAction)
+	EPPCustomAction CustomAction;
 	UPROPERTY(ReplicatedUsing = OnRep_RotationMode)
 	EPPRotationMode RotationMode;
 	UPROPERTY(ReplicatedUsing = OnRep_MovementState)

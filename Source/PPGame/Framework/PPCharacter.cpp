@@ -33,6 +33,7 @@ void APPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME_CONDITION(APPCharacter, RotationMode, COND_SkipOwner);
 	DOREPLIFETIME_CONDITION(APPCharacter, OverlayState, COND_SkipOwner);
 	DOREPLIFETIME_CONDITION(APPCharacter, AimPitch, COND_SkipOwner);
+	DOREPLIFETIME_CONDITION(APPCharacter, CustomAction, COND_SkipOwner);
 }
 
 void APPCharacter::BeginPlay()
@@ -104,6 +105,29 @@ void APPCharacter::OnOverlayStateChanged(const EPPOverlayState PreOverlayState)
 	if (IsValid(MainAnimInstance))
 	{
 		MainAnimInstance->GetAnimInfo().OverlayState = OverlayState;
+	}
+}
+
+void APPCharacter::SetCustomAction(const EPPCustomAction NewCustonAction, bool bForce)
+{
+	if (CustomAction != NewCustonAction || bForce)
+	{
+		const EPPCustomAction Prev = CustomAction;
+		CustomAction = NewCustonAction;
+		OnCustActionChanged(Prev);
+
+		if (GetLocalRole() == ROLE_AutonomousProxy)
+		{
+			Server_SetCustomAction(NewCustonAction, bForce);
+		}
+	}
+}
+
+void APPCharacter::OnCustActionChanged(const EPPCustomAction PreCustomAction)
+{
+	if (IsValid(MainAnimInstance))
+	{
+		MainAnimInstance->GetAnimInfo().CustomAction = CustomAction;
 	}
 }
 
@@ -263,6 +287,16 @@ void APPCharacter::OnRep_OverlayState(EPPOverlayState PreOverlayState)
 void APPCharacter::Server_SetOverlayState_Implementation(const EPPOverlayState NewOverlayState, bool bForce)
 {
 	SetOverlayState(NewOverlayState, bForce);
+}
+
+void APPCharacter::OnRep_CustomAction(EPPCustomAction PreCustomAction)
+{
+	OnCustActionChanged(PreCustomAction);
+}
+
+void APPCharacter::Server_SetCustomAction_Implementation(const EPPCustomAction NewCustonAction, bool bForce)
+{
+	SetCustomAction(NewCustonAction, bForce);
 }
 
 void APPCharacter::OnRep_ViewMode(EPPViewMode PreViewMode)

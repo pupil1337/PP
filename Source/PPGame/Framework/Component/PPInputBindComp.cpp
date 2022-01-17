@@ -14,8 +14,7 @@ UPPInputBindComp::UPPInputBindComp()
 void UPPInputBindComp::PPInitComponent()
 {
 	Super::PPInitComponent();
-
-	OwnerPawn = Cast<APPCharacter>(GetOwner());
+	
 	if (IsValid(OwnerPawn))
 	{
 		if (OwnerPawn->IsLocallyControlled())
@@ -55,7 +54,10 @@ void UPPInputBindComp::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		PlayerInputComponent->BindAxis("MoveRight/Left", this, &UPPInputBindComp::MoveRight);
 		PlayerInputComponent->BindAxis("LookUp/Down", this, &UPPInputBindComp::TurnUp);
 		PlayerInputComponent->BindAxis("LookLeft/Right", this, &UPPInputBindComp::TurnRight);
-		
+
+		PlayerInputComponent->BindAction("FireAction", IE_Pressed, this, &UPPInputBindComp::FirePressedAction);
+		PlayerInputComponent->BindAction("FireAction", IE_Released, this, &UPPInputBindComp::FireReleasedAction);
+		PlayerInputComponent->BindAction("JumpAction", IE_Pressed, this, &UPPInputBindComp::JumpAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Pressed, this, &UPPInputBindComp::AimPressedAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Released, this, &UPPInputBindComp::AimReleasedAction);
 		PlayerInputComponent->BindAction("CameraAction", IE_Released, this, &UPPInputBindComp::CameraReleasedAction);
@@ -116,6 +118,31 @@ void UPPInputBindComp::AimReleasedAction()
 	{
 		OwnerPawn->SetRotationMode(EPPRotationMode::LookingDirection);
 	}
+}
+
+void UPPInputBindComp::JumpAction()
+{
+	if (IsValid(OwnerPawn))
+	{
+		OwnerPawn->Jump();
+	}
+}
+
+void UPPInputBindComp::FirePressedAction()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(FireHandle))
+	{
+		return;
+	}
+	
+	OnFire.Broadcast(true);
+	GetWorld()->GetTimerManager().SetTimer(FireHandle, this, &UPPInputBindComp::FirePressedAction, 0.2f, true, 0.0f);
+}
+
+void UPPInputBindComp::FireReleasedAction()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
+	OnFire.Broadcast(false);
 }
 
 void UPPInputBindComp::SwitchCameraMode()

@@ -13,5 +13,13 @@ UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PPGAME_API UPPWeaponMgr : public UPPCompBase
 {
 	GENERATED_BODY()
+public:
+	UPPWeaponMgr();
+
+	virtual void PPInitComponent() override;
+	virtual void ChangeControllerRole() override;
 	
+protected:
+	UFUNCTION()
+	void OnFire(bool Op);
 };
