@@ -10,7 +10,7 @@ APPWeaponBase::APPWeaponBase()
 {
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void APPWeaponBase::BeginPlay()
