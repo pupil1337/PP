@@ -3,6 +3,8 @@
 
 #include "PPWeaponBase.h"
 
+#include "PPGame/Framework/PPCharacter.h"
+
 
 APPWeaponBase::APPWeaponBase()
 {
@@ -14,7 +16,8 @@ APPWeaponBase::APPWeaponBase()
 void APPWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	OwnerPawn = Cast<APPCharacter>(GetOwner());
 }
 
 void APPWeaponBase::Equip()

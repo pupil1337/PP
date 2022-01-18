@@ -10,13 +10,9 @@ UPPCompBase::UPPCompBase()
 	CompSpawnCondition = EPPCompSpawnCondition::EPPCSC_OnlyOnServer;
 }
 
-void UPPCompBase::PPInitComponent()
-{
-	OwnerPawn = Cast<APPCharacter>(GetOwner());
-}
-
 void UPPCompBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	OwnerPawn = Cast<APPCharacter>(GetOwner());
 }

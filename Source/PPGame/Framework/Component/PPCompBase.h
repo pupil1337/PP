@@ -27,7 +27,7 @@ public:
 	UPPCompBase();
 	virtual void BeginPlay() override;
 
-	virtual void PPInitComponent();
+	virtual void PPInitComponent(){ }
 	virtual void ChangeControllerRole(){ }
 
 	//==============================================================//

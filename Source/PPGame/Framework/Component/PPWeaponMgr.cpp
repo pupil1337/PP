@@ -4,6 +4,7 @@
 #include "PPWeaponMgr.h"
 
 #include "PPInputBindComp.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/Weapon/PPWeaponBase.h"
@@ -17,13 +18,67 @@ void UPPWeaponMgr::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(UPPWeaponMgr, CurrWeapon, COND_SkipOwner);
-	DOREPLIFETIME_CONDITION(UPPWeaponMgr, WeaponList, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(UPPWeaponMgr, CurrWeapon, COND_SimulatedOnly);
+	DOREPLIFETIME_CONDITION(UPPWeaponMgr, WeaponList, COND_AutonomousOnly);
+}
+
+void UPPWeaponMgr::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (GetOwnerRole() == ROLE_Authority)
+	{
+		FActorSpawnParameters tParame;
+		tParame.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		tParame.Owner = OwnerPawn;
+
+		for (auto &it: WeaponClassList)
+		{
+			if (IsValid(it))
+			{
+				UClass* tClass = it.Get();
+				if (IsValid(tClass))
+				{
+					APPWeaponBase* tWeapon = Cast<APPWeaponBase>(GetWorld()->SpawnActor<APPWeaponBase>(tClass, tParame));
+					if (IsValid(tWeapon))
+					{
+						tWeapon->SetActorHiddenInGame(true);
+						WeaponList.Add(tWeapon);
+					}
+				}
+			}
+		}
+		
+		if (!IsValid(WeaponList[0]))
+		{
+			UE_LOG(LogTemp, Error, TEXT("没有武器怎么玩???"));
+			check(false);
+		}
+	}
 }
 
 void UPPWeaponMgr::PPInitComponent()
 {
 	Super::PPInitComponent();
+	
+	if (GetOwnerRole() == ROLE_AutonomousProxy)
+	{
+		GetWorld()->GetTimerManager().SetTimer(AutonomousInitEquipHandle, FTimerDelegate::CreateLambda([this]()
+		{
+			if (WeaponList.Num() > 0 && IsValid(WeaponList[0]))
+			{
+				Equip(WeaponList[0], true);
+				GetWorld()->GetTimerManager().ClearTimer(AutonomousInitEquipHandle);
+			}
+		}), 0.1f, true);
+	}
+	else if (GetOwnerRole() == ROLE_Authority && GetNetMode() != NM_DedicatedServer)
+	{
+		if (WeaponList.Num() > 0 && IsValid(WeaponList[0]))
+		{
+			Equip(WeaponList[0], true);
+		}
+	}
 }
 
 void UPPWeaponMgr::ChangeControllerRole()
@@ -37,55 +92,6 @@ void UPPWeaponMgr::ChangeControllerRole()
 		{
 			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFire);
 		}
-	}
-}
-
-void UPPWeaponMgr::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	if (GetOwnerRole() == ROLE_Authority)
-	{
-		FActorSpawnParameters tParame;
-		tParame.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		tParame.Owner = OwnerPawn;
-
-		for (int i = 0; i != WeaponClassList.Num(); ++i)
-		{
-			if (IsValid(WeaponClassList[i]))
-			{
-				UClass* tClass = WeaponClassList[i].Get();
-				if (IsValid(tClass))
-				{
-					APPWeaponBase* tWeapon = Cast<APPWeaponBase>(GetWorld()->SpawnActor<APPWeaponBase>(tClass, tParame));
-                    if (IsValid(tWeapon))
-                    {
-                    	tWeapon->SetActorHiddenInGame(true);
-                    	WeaponList[i] = tWeapon;
-                    }
-				}
-			}
-		}
-		
-		if (!IsValid(WeaponList[0]))
-		{
-			UE_LOG(LogTemp, Error, TEXT("没有武器怎么玩???"));
-			check(false);
-		}
-	}
-	
-	if (GetOwnerRole() == ROLE_AutonomousProxy)
-	{
-		GetWorld()->GetTimerManager().SetTimer(InitRefreshWeaponHandle, this, &UPPWeaponMgr::AutonomousInitWeapon, 0.2f, true);
-	}
-}
-
-void UPPWeaponMgr::AutonomousInitWeapon()
-{
-	if (IsValid(WeaponList[0]))
-	{
-		Equip(WeaponList[0], true);
-		GetWorld()->GetTimerManager().ClearTimer(InitRefreshWeaponHandle);
 	}
 }
 
@@ -114,7 +120,7 @@ void UPPWeaponMgr::OnWeaponChanged(const APPWeaponBase* PreWeapon)
 	}
 }
 
-void UPPWeaponMgr::Server_Equip(APPWeaponBase* NewWeapon, bool Force)
+void UPPWeaponMgr::Server_Equip_Implementation(APPWeaponBase* NewWeapon, bool Force)
 {
 	Equip(NewWeapon, Force);
 }

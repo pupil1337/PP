@@ -39,8 +39,7 @@ void APPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void APPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ForceUpdateAnimState();
+	
 }
 
 void APPCharacter::Tick(float DeltaSeconds)
@@ -254,15 +253,6 @@ void APPCharacter::UpdateCharacterMovement()
 	}
 }
 
-void APPCharacter::ForceUpdateAnimState()
-{
-	SetViewMode(EPPViewMode::ThirdPerson, true);
-	SetRotationMode(EPPRotationMode::LookingDirection, true);
-	SetGait(EPPGait::Idle, true);
-	SetOverlayState(EPPOverlayState::Pistol, true);
-	SetMovementState(EPPMovementState::Grounded, true);
-}
-
 void APPCharacter::Server_SetAimPitch_Implementation(float NewAimPitch)
 {
 	AimPitch = NewAimPitch;
@@ -311,6 +301,8 @@ void APPCharacter::Server_SetViewMode_Implementation(const EPPViewMode NewViewMo
 
 void APPCharacter::OnRep_RotationMode(EPPRotationMode PreRotationMode)
 {
+	ENetMode tMode = GetNetMode();
+	ENetRole tRole = GetLocalRole();
 	OnRotationModeChanged(PreRotationMode);
 }
 

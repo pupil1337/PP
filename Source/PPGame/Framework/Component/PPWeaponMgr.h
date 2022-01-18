@@ -18,29 +18,28 @@ class PPGAME_API UPPWeaponMgr : public UPPCompBase
 public:
 	UPPWeaponMgr();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void BeginPlay() override;
 	virtual void PPInitComponent() override;
 	virtual void ChangeControllerRole() override;
-	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<APPWeaponBase> > WeaponClassList;
-
+	
 	UPROPERTY(Replicated)
-	APPWeaponBase* WeaponList[10];
+	TArray<APPWeaponBase*> WeaponList;
 	
 	UFUNCTION()
 	void OnRep_CurrWeapon(APPWeaponBase* PreWeapon);
-	UPROPERTY(Replicated, ReplicatedUsing=OnRep_CurrWeapon)
+	UPROPERTY(ReplicatedUsing=OnRep_CurrWeapon)
 	APPWeaponBase* CurrWeapon;
-
+	
+	FTimerHandle AutonomousInitEquipHandle;
+	
 	void Equip(APPWeaponBase* NewWeapon, bool Force);
 	void OnWeaponChanged(const APPWeaponBase* PreWeapon);
+	UFUNCTION(Server, Reliable)
 	void Server_Equip(APPWeaponBase* NewWeapon, bool Force);
-	
-	FTimerHandle InitRefreshWeaponHandle;
-	UFUNCTION()
-	void AutonomousInitWeapon();
 	
 public:
 	UFUNCTION()

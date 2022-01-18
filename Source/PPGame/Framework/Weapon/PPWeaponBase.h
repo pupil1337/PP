@@ -7,6 +7,8 @@
 #include "PPGame/Framework/Library/PPCharacterEnumLibrary.h"
 #include "PPWeaponBase.generated.h"
 
+class APPCharacter;
+
 UCLASS()
 class PPGAME_API APPWeaponBase : public AActor
 {
@@ -21,11 +23,13 @@ protected:
 public:
 	virtual void Equip();
 	
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* Mesh;
-	
+
+	UPROPERTY()
+	APPCharacter* OwnerPawn;
 };

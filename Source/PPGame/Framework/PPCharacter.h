@@ -109,7 +109,6 @@ public:
 
 	/** Other **/
 	void UpdateCharacterMovement();
-	void ForceUpdateAnimState();
 	FORCEINLINE float GetCameraAimPitch() { return AimPitch; }
 	UFUNCTION(Server, Unreliable)
 	void Server_SetAimPitch(float NewAimPitch);
@@ -117,21 +116,21 @@ public:
 protected:
 
 	UPROPERTY(ReplicatedUsing = OnRep_OverlayState)
-	EPPOverlayState OverlayState;
+	EPPOverlayState OverlayState = EPPOverlayState::Pistol;
 	UPROPERTY(ReplicatedUsing = OnRep_CustomAction)
-	EPPCustomAction CustomAction;
+	EPPCustomAction CustomAction = EPPCustomAction::None;
 	UPROPERTY(ReplicatedUsing = OnRep_RotationMode)
-	EPPRotationMode RotationMode;
+	EPPRotationMode RotationMode = EPPRotationMode::LookingDirection;
 	UPROPERTY(ReplicatedUsing = OnRep_MovementState)
-	EPPMovementState MovementState;
+	EPPMovementState MovementState = EPPMovementState::Grounded;
 	UPROPERTY()
-	EPPMovementAction MovementAction;
+	EPPMovementAction MovementAction = EPPMovementAction::None;
 	UPROPERTY(/*ReplicatedUsing = OnRep_Stance*/)
-	EPPStance Stance;
+	EPPStance Stance = EPPStance::Standing;
 	UPROPERTY(ReplicatedUsing = OnRep_ViewMode)
-	EPPViewMode ViewMode;
+	EPPViewMode ViewMode = EPPViewMode::ThirdPerson;
 	UPROPERTY(/*ReplicatedUsing = OnRep_Gait*/)
-	EPPGait Gait;
+	EPPGait Gait = EPPGait::Idle;
 	UPROPERTY(Replicated)
 	float AimPitch;
 	
