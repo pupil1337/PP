@@ -18,9 +18,15 @@ void APPWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerPawn = Cast<APPCharacter>(GetOwner());
+	AttachToComponent(OwnerPawn->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Socket_Weapon"));
 }
 
 void APPWeaponBase::Equip()
 {
-	
+	SetActorHiddenInGame(false);
+}
+
+void APPWeaponBase::UnEquip()
+{
+	SetActorHiddenInGame(true);
 }

@@ -14,7 +14,7 @@ void UPPNotify_FireEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	if (IsValid(MeshComp))
 	{
 		APPCharacter* tPlayer = Cast<APPCharacter>(MeshComp->GetOwner());
-		if (IsValid(tPlayer))
+		if (IsValid(tPlayer) && tPlayer->IsLocallyControlled())
 		{
 			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(tPlayer->GetComponentByClass(UPPWeaponMgr::StaticClass()));
 			if (IsValid(tComp))

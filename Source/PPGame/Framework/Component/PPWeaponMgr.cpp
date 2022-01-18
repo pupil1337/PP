@@ -63,12 +63,13 @@ void UPPWeaponMgr::PPInitComponent()
 	
 	if (GetOwnerRole() == ROLE_AutonomousProxy)
 	{
-		GetWorld()->GetTimerManager().SetTimer(AutonomousInitEquipHandle, FTimerDelegate::CreateLambda([this]()
+		static FTimerHandle tHandle;
+		GetWorld()->GetTimerManager().SetTimer(tHandle, FTimerDelegate::CreateLambda([&]()
 		{
 			if (WeaponList.Num() > 0 && IsValid(WeaponList[0]))
 			{
 				Equip(WeaponList[0], true);
-				GetWorld()->GetTimerManager().ClearTimer(AutonomousInitEquipHandle);
+				GetWorld()->GetTimerManager().ClearTimer(tHandle);
 			}
 		}), 0.1f, true);
 	}
@@ -91,6 +92,7 @@ void UPPWeaponMgr::ChangeControllerRole()
 		if (IsValid(tComp))
 		{
 			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFire);
+			tComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
 		}
 	}
 }
@@ -99,7 +101,7 @@ void UPPWeaponMgr::Equip(APPWeaponBase* NewWeapon, bool Force)
 {
 	if (CurrWeapon != NewWeapon || Force)
 	{
-		const APPWeaponBase* PreWeapon = CurrWeapon;
+		APPWeaponBase* PreWeapon = CurrWeapon;
 		CurrWeapon = NewWeapon;
 		OnWeaponChanged(PreWeapon);
 		
@@ -110,19 +112,29 @@ void UPPWeaponMgr::Equip(APPWeaponBase* NewWeapon, bool Force)
 	}
 }
 
-void UPPWeaponMgr::OnWeaponChanged(const APPWeaponBase* PreWeapon)
+void UPPWeaponMgr::OnWeaponChanged(APPWeaponBase* PreWeapon)
 {
-	CurrWeapon->Equip();
-	
-	if (IsValid(OwnerPawn))
+	if (IsValid(PreWeapon))
 	{
-		OwnerPawn->SetOverlayState(CurrWeapon->WeaponType);
+		PreWeapon->UnEquip();
+	}
+
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->Equip();
+		if (IsValid(OwnerPawn))
+		{
+			OwnerPawn->SetOverlayState(CurrWeapon->WeaponType);
+		}
 	}
 }
 
 void UPPWeaponMgr::Server_Equip_Implementation(APPWeaponBase* NewWeapon, bool Force)
 {
-	Equip(NewWeapon, Force);
+	if (IsValid(NewWeapon))
+	{
+		Equip(NewWeapon, Force);
+	}
 }
 
 void UPPWeaponMgr::OnRep_CurrWeapon(APPWeaponBase* PreWeapon)
@@ -130,11 +142,40 @@ void UPPWeaponMgr::OnRep_CurrWeapon(APPWeaponBase* PreWeapon)
 	OnWeaponChanged(PreWeapon);
 }
 
+void UPPWeaponMgr::OnSwitchWeapon(bool Up)
+{
+	if (WeaponList.Num() > 0)
+	{
+		CurrIndex += Up ? -1 : 1;
+        if (CurrIndex < 0)
+        {
+        	CurrIndex = WeaponList.Num() - 1;
+        }
+        else if (CurrIndex >= WeaponList.Num())
+        {
+        	CurrIndex = 0;
+        }
+
+		if (IsValid(WeaponList[CurrIndex]))
+		{
+			Equip(WeaponList[CurrIndex], false);
+		}
+	}
+}
+
 void UPPWeaponMgr::OnFire(bool Op)
 {
 	if (IsValid(OwnerPawn))
 	{
-		EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
-		OwnerPawn->SetCustomAction(tAction);
+		UPPInputBindComp* tComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
+		if (IsValid(tComp))
+		{
+			if (Op != tComp->InFiring())
+			{
+				return;	
+			}
+			EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
+			OwnerPawn->SetCustomAction(tAction);
+		}
 	}
 }

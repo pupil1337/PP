@@ -60,6 +60,8 @@ void UPPInputBindComp::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		PlayerInputComponent->BindAction("JumpAction", IE_Pressed, this, &UPPInputBindComp::JumpAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Pressed, this, &UPPInputBindComp::AimPressedAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Released, this, &UPPInputBindComp::AimReleasedAction);
+		PlayerInputComponent->BindAction("WeaponUp", IE_Pressed, this, &UPPInputBindComp::WeaponUp);
+		PlayerInputComponent->BindAction("WeaponDown", IE_Pressed, this, &UPPInputBindComp::WeaponDown);
 		PlayerInputComponent->BindAction("CameraAction", IE_Released, this, &UPPInputBindComp::CameraReleasedAction);
 	}
 }
@@ -130,17 +132,26 @@ void UPPInputBindComp::JumpAction()
 
 void UPPInputBindComp::FirePressedAction()
 {
-	OnFire.Broadcast(true);
-	
-	if (!GetWorld()->GetTimerManager().IsTimerActive(FireHandle))
+	if (!bFiring)
 	{
-		GetWorld()->GetTimerManager().SetTimer(FireHandle, this, &UPPInputBindComp::FirePressedAction, 0.02f, true, 0.0f);
+		bFiring = true;
+		OnFire.Broadcast(true);
 	}
 }
 
 void UPPInputBindComp::FireReleasedAction()
 {
-	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
+	bFiring = false;
+}
+
+void UPPInputBindComp::WeaponUp()
+{
+	OnChangeWeapon.Broadcast(true);
+}
+
+void UPPInputBindComp::WeaponDown()
+{
+	OnChangeWeapon.Broadcast(false);
 }
 
 void UPPInputBindComp::SwitchCameraMode()

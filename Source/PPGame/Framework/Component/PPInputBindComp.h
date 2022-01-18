@@ -7,6 +7,7 @@
 #include "PPInputBindComp.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFire, bool, Op);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWeapon, bool, Up);
 
 class UInputComponent;
 
@@ -21,6 +22,7 @@ public:
 	UPPInputBindComp();
 
 	FOnFire OnFire;
+	FOnChangeWeapon OnChangeWeapon;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	UFUNCTION()
@@ -43,6 +45,10 @@ public:
 	void FirePressedAction();
 	UFUNCTION()
 	void FireReleasedAction();
+	UFUNCTION()
+	void WeaponUp();
+	UFUNCTION()
+	void WeaponDown();
 
 protected:
 	UFUNCTION()
@@ -51,7 +57,10 @@ protected:
 protected:
 	bool bInputBind;
 	FTimerHandle CameraMoveHandle;
-	FTimerHandle FireHandle;
+	bool bFiring;
+	
+public:
+	FORCEINLINE bool InFiring(){ return bFiring; };
 	
 public:
 	

@@ -22,6 +22,7 @@ protected:
 
 public:
 	virtual void Equip();
+	virtual void UnEquip();
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;

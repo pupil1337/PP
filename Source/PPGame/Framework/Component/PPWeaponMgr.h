@@ -33,16 +33,18 @@ protected:
 	void OnRep_CurrWeapon(APPWeaponBase* PreWeapon);
 	UPROPERTY(ReplicatedUsing=OnRep_CurrWeapon)
 	APPWeaponBase* CurrWeapon;
-	
-	FTimerHandle AutonomousInitEquipHandle;
+	int CurrIndex;
 	
 	void Equip(APPWeaponBase* NewWeapon, bool Force);
-	void OnWeaponChanged(const APPWeaponBase* PreWeapon);
+	void OnWeaponChanged(APPWeaponBase* PreWeapon);
 	UFUNCTION(Server, Reliable)
 	void Server_Equip(APPWeaponBase* NewWeapon, bool Force);
 	
 public:
 	UFUNCTION()
 	void OnFire(bool Op);
+
+	UFUNCTION()
+	void OnSwitchWeapon(bool Up);
 	
 };
