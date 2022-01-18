@@ -180,7 +180,7 @@ void APPCharacterBase::LinkAndInitComp(TSubclassOf<UPPCompBase> ClassType)
 						}
 					case EPPCompSpawnCondition::EPPCSC_OnlyOnAutonomousProxy:
 						{
-							if (GetLocalRole() == ROLE_AutonomousProxy || GetNetMode() == NM_Standalone || GetNetMode() == NM_ListenServer)
+							if (GetLocalRole() == ROLE_AutonomousProxy || GetNetMode() == NM_Standalone)
 							{
 								bNeedCreate = true;
 							}
