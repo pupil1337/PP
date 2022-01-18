@@ -5,6 +5,7 @@
 
 #include "PPGame/Framework/PPCharacter.h"
 
+const FName MUZZLE(TEXT("MuzzleFlashSocket"));
 
 APPWeaponBase::APPWeaponBase()
 {
@@ -31,8 +32,20 @@ void APPWeaponBase::UnEquip()
 	SetActorHiddenInGame(true);
 }
 
-void APPWeaponBase::Fire()
+bool APPWeaponBase::Fire()
 {
+	if (IsValid(OwnerPawn))
+	{
+		APlayerController* tPC = Cast<APlayerController>(OwnerPawn->GetController());
+		if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
+		{
+			CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
+			CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
+			CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
+			return true;
+		}
+	}
+	return false;
 }
 
 void APPWeaponBase::Aim(bool Op)

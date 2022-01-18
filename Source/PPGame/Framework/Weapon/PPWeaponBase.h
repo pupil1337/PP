@@ -7,6 +7,16 @@
 #include "PPGame/Framework/Library/PPCharacterEnumLibrary.h"
 #include "PPWeaponBase.generated.h"
 
+USTRUCT()
+struct FCurrFireInfo
+{
+	GENERATED_BODY()
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	FVector MuzzleLocation;
+};
+
 class APPCharacter;
 
 UCLASS()
@@ -23,7 +33,7 @@ protected:
 public:
 	virtual void Equip();
 	virtual void UnEquip();
-	virtual void Fire();
+	virtual bool Fire();
 	virtual void Aim(bool Op);
 	
 	UPROPERTY(EditDefaultsOnly)
@@ -35,4 +45,8 @@ protected:
 
 	UPROPERTY()
 	APPCharacter* OwnerPawn;
+
+	/** Transient **/
+	UPROPERTY(Transient)
+	FCurrFireInfo CurrFireInfo;
 };
