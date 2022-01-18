@@ -5,7 +5,7 @@
 
 UPPAttributeComp::UPPAttributeComp()
 {
-	CompSpawnCondition = EPPCompSpawnCondition::EPPCSC_OnlyOnAutonomousProxy;
+	CompSpawnCondition = EPPCompSpawnCondition::EPPCSC_Multi;
 }
 
 void UPPAttributeComp::BeginPlay()

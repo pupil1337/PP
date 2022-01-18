@@ -7,6 +7,7 @@
 #include "PPInputBindComp.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFire, bool, Op);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAim, bool, Op);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWeapon, bool, Up);
 
 class UInputComponent;
@@ -22,6 +23,7 @@ public:
 	UPPInputBindComp();
 
 	FOnFire OnFire;
+	FOnAim OnAim;
 	FOnChangeWeapon OnChangeWeapon;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);

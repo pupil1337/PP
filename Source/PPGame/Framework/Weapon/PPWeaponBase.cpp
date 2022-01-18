@@ -30,3 +30,11 @@ void APPWeaponBase::UnEquip()
 {
 	SetActorHiddenInGame(true);
 }
+
+void APPWeaponBase::Fire()
+{
+}
+
+void APPWeaponBase::Aim(bool Op)
+{
+}

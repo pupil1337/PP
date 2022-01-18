@@ -3,6 +3,7 @@
 
 #include "PPInputBindComp.h"
 
+#include "PPWeaponMgr.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "Engine/InputDelegateBinding.h"
 
@@ -111,6 +112,7 @@ void UPPInputBindComp::AimPressedAction()
 	if (IsValid(OwnerPawn))
 	{
 		OwnerPawn->SetRotationMode(EPPRotationMode::Aiming);
+		OnAim.Broadcast(true);
 	}
 }
 
@@ -119,6 +121,7 @@ void UPPInputBindComp::AimReleasedAction()
 	if (IsValid(OwnerPawn))
 	{
 		OwnerPawn->SetRotationMode(EPPRotationMode::LookingDirection);
+		OnAim.Broadcast(false);
 	}
 }
 

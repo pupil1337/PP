@@ -12,6 +12,7 @@
 
 UPPWeaponMgr::UPPWeaponMgr()
 {
+	CompSpawnCondition = EPPCompSpawnCondition::EPPCSC_Multi;
 }
 
 void UPPWeaponMgr::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -92,6 +93,7 @@ void UPPWeaponMgr::ChangeControllerRole()
 		if (IsValid(tComp))
 		{
 			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFire);
+			tComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAim);
 			tComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
 		}
 	}
@@ -165,17 +167,28 @@ void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 
 void UPPWeaponMgr::OnFire(bool Op)
 {
-	if (IsValid(OwnerPawn))
+	if (IsValid(OwnerPawn) && IsValid(CurrWeapon))
 	{
 		UPPInputBindComp* tComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
 		if (IsValid(tComp))
 		{
-			if (Op != tComp->InFiring())
+			// Animation
+			if (Op == tComp->InFiring())
 			{
-				return;	
+				EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
+				OwnerPawn->SetCustomAction(tAction);
 			}
-			EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
-			OwnerPawn->SetCustomAction(tAction);
+
+			// Weapon
+			CurrWeapon->Fire();
 		}
+	}
+}
+
+void UPPWeaponMgr::OnAim(bool Op)
+{
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->Aim(Op);
 	}
 }
