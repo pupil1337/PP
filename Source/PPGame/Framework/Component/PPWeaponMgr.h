@@ -42,9 +42,11 @@ protected:
 	
 public:
 	UFUNCTION()
-	void OnFire(bool Op);
+	void OnFireState(bool Op);
 	UFUNCTION()
-	void OnAim(bool Op);
+	void OnAimState(bool Op);
+	UFUNCTION()
+	void OnFire();
 
 	UFUNCTION()
 	void OnSwitchWeapon(bool Up);

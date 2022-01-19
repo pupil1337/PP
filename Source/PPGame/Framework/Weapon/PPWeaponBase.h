@@ -18,6 +18,7 @@ struct FCurrFireInfo
 };
 
 class APPCharacter;
+class UPPCrosshairWidget;
 
 UCLASS()
 class PPGAME_API APPWeaponBase : public AActor
@@ -42,6 +43,12 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* Mesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UPPCrosshairWidget> CrosshairWidgetClass;
+
+	UPROPERTY()
+	UPPCrosshairWidget* Crosshair;
 
 	UPROPERTY()
 	APPCharacter* OwnerPawn;

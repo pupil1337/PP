@@ -92,8 +92,8 @@ void UPPWeaponMgr::ChangeControllerRole()
 		UPPInputBindComp* tComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
 		if (IsValid(tComp))
 		{
-			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFire);
-			tComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAim);
+			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFireState);
+			tComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAimState);
 			tComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
 		}
 	}
@@ -165,7 +165,7 @@ void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 	}
 }
 
-void UPPWeaponMgr::OnFire(bool Op)
+void UPPWeaponMgr::OnFireState(bool Op)
 {
 	if (IsValid(OwnerPawn) && IsValid(CurrWeapon))
 	{
@@ -178,17 +178,19 @@ void UPPWeaponMgr::OnFire(bool Op)
 				EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
 				OwnerPawn->SetCustomAction(tAction);
 			}
-
-			// Weapon
-			CurrWeapon->Fire();
 		}
 	}
 }
 
-void UPPWeaponMgr::OnAim(bool Op)
+void UPPWeaponMgr::OnAimState(bool Op)
 {
 	if (IsValid(CurrWeapon))
 	{
 		CurrWeapon->Aim(Op);
 	}
+}
+
+void UPPWeaponMgr::OnFire()
+{
+
 }

@@ -4,6 +4,7 @@
 #include "PPWeaponBase.h"
 
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/UI/PPCrosshairWidget.h"
 
 const FName MUZZLE(TEXT("MuzzleFlashSocket"));
 
@@ -20,6 +21,19 @@ void APPWeaponBase::BeginPlay()
 
 	OwnerPawn = Cast<APPCharacter>(GetOwner());
 	AttachToComponent(OwnerPawn->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Socket_Weapon"));
+
+	if (IsValid(OwnerPawn) && OwnerPawn->IsLocallyControlled())
+	{
+		if (IsValid(CrosshairWidgetClass))
+		{
+			Crosshair = Cast<UPPCrosshairWidget>(CreateWidget(GetWorld(), CrosshairWidgetClass));
+            if (IsValid(Crosshair))
+            {
+            	Crosshair->AddToViewport(0);
+            }
+		}
+		
+	}
 }
 
 void APPWeaponBase::Equip()
@@ -50,4 +64,8 @@ bool APPWeaponBase::Fire()
 
 void APPWeaponBase::Aim(bool Op)
 {
+	if (IsValid(Crosshair))
+	{
+		Crosshair->Aim(Op);
+	}
 }

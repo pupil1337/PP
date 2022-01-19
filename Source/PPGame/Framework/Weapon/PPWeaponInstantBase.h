@@ -6,6 +6,8 @@
 #include "PPWeaponBase.h"
 #include "PPWeaponInstantBase.generated.h"
 
+class UPPCrosshairWidget;
+
 /**
  * 
  */
@@ -16,6 +18,8 @@ class PPGAME_API APPWeaponInstantBase : public APPWeaponBase
 	
 public:
 	APPWeaponInstantBase();
-
+	virtual void BeginPlay() override;
 	virtual bool Fire() override;
+	virtual void Aim(bool Op) override;
+	
 };
