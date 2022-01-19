@@ -127,6 +127,14 @@ void UPPWeaponMgr::OnWeaponChanged(APPWeaponBase* PreWeapon)
 		if (IsValid(OwnerPawn))
 		{
 			OwnerPawn->SetOverlayState(CurrWeapon->WeaponType);
+			if (ChangeWeaponMontages.Contains(CurrWeapon->WeaponType))
+			{
+				UAnimMontage* tMontage = ChangeWeaponMontages[CurrWeapon->WeaponType];
+				if (IsValid(tMontage))
+				{
+					OwnerPawn->PlayAnimMontage(tMontage);
+				}
+			}
 		}
 	}
 }
@@ -190,7 +198,18 @@ void UPPWeaponMgr::OnAimState(bool Op)
 	}
 }
 
-void UPPWeaponMgr::OnFire()
+void UPPWeaponMgr::OnFire(bool Op)
 {
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->Fire(Op);
+	}
+}
 
+void UPPWeaponMgr::OnMuzzlePS()
+{
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->PlayMuzzlePS();
+	}
 }

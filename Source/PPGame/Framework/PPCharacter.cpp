@@ -53,10 +53,14 @@ void APPCharacter::Tick(float DeltaSeconds)
 	
 	if (IsLocallyControlled())
 	{
-		AimPitch = Cast<APlayerController>(GetController())->PlayerCameraManager->ViewTarget.POV.Rotation.Pitch;
-		if (GetNetMode() == NM_Client)
+		APlayerController* tPC = Cast<APlayerController>(GetController());
+		if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
 		{
-			Server_SetAimPitch(AimPitch);
+			AimPitch = tPC->PlayerCameraManager->ViewTarget.POV.Rotation.Pitch;	
+			if (GetNetMode() == NM_Client)
+			{
+				Server_SetAimPitch(AimPitch);
+			}
 		}
 	}
 }

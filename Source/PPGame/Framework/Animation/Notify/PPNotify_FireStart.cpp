@@ -13,12 +13,19 @@ void UPPNotify_FireStart::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 	if (IsValid(MeshComp))
 	{
 		APPCharacter* tPlayer = Cast<APPCharacter>(MeshComp->GetOwner());
-		if (IsValid(tPlayer) && tPlayer->IsLocallyControlled())
+		if (IsValid(tPlayer))
 		{
 			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(tPlayer->GetComponentByClass(UPPWeaponMgr::StaticClass()));
 			if (IsValid(tComp))
 			{
-				tComp->OnFire();
+				if (tPlayer->IsLocallyControlled())
+				{
+					tComp->OnFire(true);
+				}
+				if (tPlayer->GetNetMode() != NM_DedicatedServer)
+				{
+					tComp->OnMuzzlePS();
+				}
 			}
 		}
 	}

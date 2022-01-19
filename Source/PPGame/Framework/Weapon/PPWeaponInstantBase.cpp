@@ -15,11 +15,11 @@ void APPWeaponInstantBase::BeginPlay()
 	
 }
 
-bool APPWeaponInstantBase::Fire()
+bool APPWeaponInstantBase::Fire(bool Op)
 {
-	if (Super::Fire())
+	if (Super::Fire(Op))
 	{
-		UKismetSystemLibrary::DrawDebugLine(this, CurrFireInfo.CameraLocation, CurrFireInfo.CameraRotation.Vector().Normalize() * FVector(1000.0f) + CurrFireInfo.CameraLocation, FLinearColor::Red, 0.5f);
+		UKismetSystemLibrary::DrawDebugLine(GetWorld(), CurrFireInfo.CameraLocation, CurrFireInfo.CameraForward.Normalize() * FVector(100.0f) + CurrFireInfo.CameraLocation, FLinearColor::Red, 0.5f);
 	}
 	return true;
 }

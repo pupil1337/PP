@@ -3,6 +3,9 @@
 
 #include "PPWeaponBase.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
 
@@ -46,7 +49,7 @@ void APPWeaponBase::UnEquip()
 	SetActorHiddenInGame(true);
 }
 
-bool APPWeaponBase::Fire()
+bool APPWeaponBase::Fire(bool Op)
 {
 	if (IsValid(OwnerPawn))
 	{
@@ -54,12 +57,19 @@ bool APPWeaponBase::Fire()
 		if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
 		{
 			CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
-			CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
+			CurrFireInfo.CameraForward = tPC->PlayerCameraManager->GetActorForwardVector();
 			CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
-			return true;
 		}
 	}
-	return false;
+	return true;
+}
+
+void APPWeaponBase::PlayMuzzlePS()
+{
+	if (IsValid(MuzzlePS))
+	{
+		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE);
+	}
 }
 
 void APPWeaponBase::Aim(bool Op)

@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "PPCompBase.h"
+#include "PPGame/Framework/Library/PPCharacterEnumLibrary.h"
 #include "PPWeaponMgr.generated.h"
 
 class APPWeaponBase;
+class UAnimMontage;
 
 /**
  * 
@@ -28,6 +30,9 @@ protected:
 	
 	UPROPERTY(Replicated)
 	TArray<APPWeaponBase*> WeaponList;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<EPPOverlayState, UAnimMontage*> ChangeWeaponMontages;
 	
 	UFUNCTION()
 	void OnRep_CurrWeapon(APPWeaponBase* PreWeapon);
@@ -46,7 +51,9 @@ public:
 	UFUNCTION()
 	void OnAimState(bool Op);
 	UFUNCTION()
-	void OnFire();
+	void OnFire(bool Op);
+	UFUNCTION()
+	void OnMuzzlePS();
 
 	UFUNCTION()
 	void OnSwitchWeapon(bool Up);

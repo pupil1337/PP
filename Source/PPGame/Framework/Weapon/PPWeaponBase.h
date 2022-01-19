@@ -13,12 +13,14 @@ struct FCurrFireInfo
 	GENERATED_BODY()
 
 	FVector CameraLocation;
-	FRotator CameraRotation;
+	FVector CameraForward;
 	FVector MuzzleLocation;
 };
 
 class APPCharacter;
 class UPPCrosshairWidget;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 UCLASS()
 class PPGAME_API APPWeaponBase : public AActor
@@ -34,8 +36,11 @@ protected:
 public:
 	virtual void Equip();
 	virtual void UnEquip();
-	virtual bool Fire();
+	virtual bool Fire(bool Op);
 	virtual void Aim(bool Op);
+
+	UFUNCTION()
+	void PlayMuzzlePS();
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
@@ -47,6 +52,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPPCrosshairWidget> CrosshairWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* MuzzlePS;
+
+	UPROPERTY()
+	UParticleSystemComponent* PSComp;
+	
 	UPROPERTY()
 	UPPCrosshairWidget* Crosshair;
 
@@ -54,6 +65,5 @@ protected:
 	APPCharacter* OwnerPawn;
 
 	/** Transient **/
-	UPROPERTY(Transient)
 	FCurrFireInfo CurrFireInfo;
 };
