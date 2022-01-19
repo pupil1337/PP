@@ -22,21 +22,21 @@ bool APPWeaponInstantBase::Fire()
 	if (Super::Fire())
 	{
 		FVector tStart = CurrFireInfo.CameraLocation;
-		FVector tEnd   = tStart + CurrFireInfo.CameraRotation.Vector().Normalize() * 10000.0f;
+		FVector tForward = CurrFireInfo.CameraRotation.Vector(); tForward.Normalize();
+		FVector tEnd   = tStart + tForward * 1000.0f;
 
-		FCollisionQueryParams tParams;
-		tParams.AddIgnoredActor(OwnerPawn);
 		FHitResult tHitResult;
-		bool bHit = GetWorld()->LineTraceSingleByChannel(tHitResult, tStart, tEnd, ECollisionChannel::ECC_Visibility, tParams);
+		bool bHit = GetWorld()->LineTraceSingleByChannel(tHitResult, tStart, tEnd, ECollisionChannel::ECC_Visibility);
 		if (bHit)
 		{
 			tEnd = tHitResult.Location;
 		}
 
-		FVector tFireStart = GetMuzzleLocation();
-		FRotator tRotation = (tEnd - tFireStart).Rotation();
+		tStart = GetMuzzleLocation();
+		tForward = tEnd - tStart; tForward.Normalize();
 
-		PlayTrailPS(tFireStart, tRotation);
+		FRotator tRotation = tForward.Rotation(); tRotation.Normalize();
+		PlayTrailPS(tStart, tRotation);
 	}
 	return true;
 }
