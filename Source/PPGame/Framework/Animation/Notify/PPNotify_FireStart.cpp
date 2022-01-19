@@ -20,7 +20,7 @@ void UPPNotify_FireStart::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 			{
 				if (tPlayer->IsLocallyControlled())
 				{
-					tComp->OnFire(true);
+					tComp->OnFire();
 				}
 				if (tPlayer->GetNetMode() != NM_DedicatedServer)
 				{

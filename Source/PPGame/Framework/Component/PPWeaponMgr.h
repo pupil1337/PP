@@ -51,7 +51,7 @@ public:
 	UFUNCTION()
 	void OnAimState(bool Op);
 	UFUNCTION()
-	void OnFire(bool Op);
+	void OnFire();
 	UFUNCTION()
 	void OnMuzzlePS();
 

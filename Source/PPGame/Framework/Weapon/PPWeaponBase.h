@@ -13,7 +13,7 @@ struct FCurrFireInfo
 	GENERATED_BODY()
 
 	FVector CameraLocation;
-	FVector CameraForward;
+	FRotator CameraRotation;
 	FVector MuzzleLocation;
 };
 
@@ -36,7 +36,7 @@ protected:
 public:
 	virtual void Equip();
 	virtual void UnEquip();
-	virtual bool Fire(bool Op);
+	virtual bool Fire();
 	virtual void Aim(bool Op);
 
 	UFUNCTION()
@@ -44,6 +44,8 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
+
+	FVector GetMuzzleLocation();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)

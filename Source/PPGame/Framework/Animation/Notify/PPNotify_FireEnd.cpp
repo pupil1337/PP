@@ -20,7 +20,7 @@ void UPPNotify_FireEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 			if (IsValid(tComp))
 			{
 				tComp->OnFireState(false);
-				tComp->OnFire(false);
+				tComp->OnFire();
 			}
 		}
 	}

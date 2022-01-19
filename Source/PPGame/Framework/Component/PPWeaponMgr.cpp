@@ -198,11 +198,11 @@ void UPPWeaponMgr::OnAimState(bool Op)
 	}
 }
 
-void UPPWeaponMgr::OnFire(bool Op)
+void UPPWeaponMgr::OnFire()
 {
 	if (IsValid(CurrWeapon))
 	{
-		CurrWeapon->Fire(Op);
+		CurrWeapon->Fire();
 	}
 }
 

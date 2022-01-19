@@ -49,7 +49,15 @@ void APPWeaponBase::UnEquip()
 	SetActorHiddenInGame(true);
 }
 
-bool APPWeaponBase::Fire(bool Op)
+void APPWeaponBase::Aim(bool Op)
+{
+	if (IsValid(Crosshair))
+	{
+		Crosshair->Aim(Op);
+	}
+}
+
+bool APPWeaponBase::Fire()
 {
 	if (IsValid(OwnerPawn))
 	{
@@ -57,8 +65,8 @@ bool APPWeaponBase::Fire(bool Op)
 		if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
 		{
 			CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
-			CurrFireInfo.CameraForward = tPC->PlayerCameraManager->GetActorForwardVector();
-			CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
+			CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
+			CurrFireInfo.MuzzleLocation = GetMuzzleLocation();
 		}
 	}
 	return true;
@@ -72,10 +80,7 @@ void APPWeaponBase::PlayMuzzlePS()
 	}
 }
 
-void APPWeaponBase::Aim(bool Op)
+FVector APPWeaponBase::GetMuzzleLocation()
 {
-	if (IsValid(Crosshair))
-	{
-		Crosshair->Aim(Op);
-	}
+	return Mesh->GetSocketLocation(MUZZLE);
 }

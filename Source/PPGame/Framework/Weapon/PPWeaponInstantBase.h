@@ -7,6 +7,7 @@
 #include "PPWeaponInstantBase.generated.h"
 
 class UPPCrosshairWidget;
+class UParticleSystem;
 
 /**
  * 
@@ -19,7 +20,17 @@ class PPGAME_API APPWeaponInstantBase : public APPWeaponBase
 public:
 	APPWeaponInstantBase();
 	virtual void BeginPlay() override;
-	virtual bool Fire(bool Op) override;
+	virtual bool Fire() override;
 	virtual void Aim(bool Op) override;
-	
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* TrailPS;
+
+	UFUNCTION()
+	void PlayTrailPS(FVector Start, FRotator Rotation);
+	UFUNCTION(Server, Unreliable)
+	void Server_PlayTrailPS(FVector Start, FRotator Rotation);
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_PlayTrailPS(FVector Start, FRotator Rotation);
 };
