@@ -21,22 +21,9 @@ bool APPWeaponInstantBase::Fire()
 {
 	if (Super::Fire())
 	{
-		FVector tStart = CurrFireInfo.CameraLocation;
-		FVector tForward = CurrFireInfo.CameraRotation.Vector(); tForward.Normalize();
-		FVector tEnd   = tStart + tForward * 1000.0f;
-
-		FHitResult tHitResult;
-		bool bHit = GetWorld()->LineTraceSingleByChannel(tHitResult, tStart, tEnd, ECollisionChannel::ECC_Visibility);
-		if (bHit)
-		{
-			tEnd = tHitResult.Location;
-		}
-
-		tStart = GetMuzzleLocation();
-		tForward = tEnd - tStart; tForward.Normalize();
-
-		FRotator tRotation = tForward.Rotation(); tRotation.Normalize();
-		PlayTrailPS(tStart, tRotation);
+		FTraceResult tHit;
+		CalcTraceResult(tHit);
+		PlayTrailPS(tHit.FireLocation, tHit.FireRotation);
 	}
 	return true;
 }

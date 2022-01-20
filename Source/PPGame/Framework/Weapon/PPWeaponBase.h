@@ -17,6 +17,28 @@ struct FCurrFireInfo
 	FVector MuzzleLocation;
 };
 
+USTRUCT()
+struct FTraceResult
+{
+	GENERATED_BODY()
+
+	FVector FireLocation;
+	FRotator FireRotation;
+
+	FVector HitLocation;
+	AActor* HitActor;
+	
+};
+
+USTRUCT()
+struct FWeaponCfg
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	float ValidDistance = 10000.0f;
+};
+
 class APPCharacter;
 class UPPCrosshairWidget;
 class UParticleSystem;
@@ -45,12 +67,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
 
+protected:
 	FVector GetMuzzleLocation();
+	void CalcTraceResult(FTraceResult& Result);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* Mesh;
 
+	UPROPERTY(EditDefaultsOnly)
+	FWeaponCfg WeaponCfg;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPPCrosshairWidget> CrosshairWidgetClass;
 

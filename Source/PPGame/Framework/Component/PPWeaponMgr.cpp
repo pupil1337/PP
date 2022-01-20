@@ -99,6 +99,19 @@ void UPPWeaponMgr::ChangeControllerRole()
 	}
 }
 
+void UPPWeaponMgr::OnUnregister()
+{
+	if (GetOwnerRole() == ROLE_Authority)
+	{
+		for (auto& it:WeaponList)
+		{
+			GetWorld()->DestroyActor(it, true);
+		}
+	}
+	
+	Super::OnUnregister();
+}
+
 void UPPWeaponMgr::Equip(APPWeaponBase* NewWeapon, bool Force)
 {
 	if (CurrWeapon != NewWeapon || Force)

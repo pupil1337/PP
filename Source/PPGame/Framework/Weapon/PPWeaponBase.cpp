@@ -21,21 +21,24 @@ APPWeaponBase::APPWeaponBase()
 void APPWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	OwnerPawn = Cast<APPCharacter>(GetOwner());
-	AttachToComponent(OwnerPawn->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Socket_Weapon"));
-
-	if (IsValid(OwnerPawn) && OwnerPawn->IsLocallyControlled())
+	if (IsValid(OwnerPawn) && OwnerPawn->GetLocalRole() != ROLE_SimulatedProxy)
 	{
-		if (IsValid(CrosshairWidgetClass))
+		AttachToComponent(OwnerPawn->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Socket_Weapon"));
+
+		if (OwnerPawn->IsLocallyControlled())
 		{
-			Crosshair = Cast<UPPCrosshairWidget>(CreateWidget(GetWorld(), CrosshairWidgetClass));
-            if (IsValid(Crosshair))
-            {
-            	Crosshair->AddToViewport(0);
-            }
-		}
+			if (IsValid(CrosshairWidgetClass))
+			{
+				Crosshair = Cast<UPPCrosshairWidget>(CreateWidget(GetWorld(), CrosshairWidgetClass));
+				if (IsValid(Crosshair))
+				{
+					Crosshair->AddToViewport(0);
+				}
+			}
 		
+		}
 	}
 }
 
@@ -76,11 +79,38 @@ void APPWeaponBase::PlayMuzzlePS()
 {
 	if (IsValid(MuzzlePS))
 	{
-		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE);
+		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE, {}, {}, EAttachLocation::SnapToTarget);
 	}
 }
 
 FVector APPWeaponBase::GetMuzzleLocation()
 {
 	return Mesh->GetSocketLocation(MUZZLE);
+}
+
+void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
+{
+	FVector tStart = CurrFireInfo.CameraLocation;
+	FVector tForward = CurrFireInfo.CameraRotation.Vector(); tForward.Normalize();
+	FVector tEnd = tStart + tForward * WeaponCfg.ValidDistance;
+
+	Result.FireLocation = CurrFireInfo.MuzzleLocation;
+	Result.FireRotation = Mesh->GetSocketRotation(MUZZLE); Result.FireRotation.Normalize();
+	Result.HitLocation = tEnd;
+	
+	FCollisionQueryParams tParams;
+	tParams.AddIgnoredActor(OwnerPawn);
+	FHitResult tHitResult;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(tHitResult, tStart, tEnd, ECollisionChannel::ECC_Visibility, tParams);
+	if (bHit)
+	{
+		tEnd = tHitResult.Location;
+		FVector tFireForward = tEnd - tStart; tFireForward.Normalize();
+		if (FVector::DotProduct(tForward, tFireForward) > 0.0f)
+		{
+			Result.FireRotation = tFireForward.Rotation(); Result.FireRotation.Normalize();
+			Result.HitLocation = tEnd;
+			Result.HitActor = tHitResult.GetActor();
+		}
+	}
 }

@@ -21,6 +21,7 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void PostNetInit() override;
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 
 	//==============================================================//
 protected:

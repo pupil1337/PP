@@ -36,6 +36,11 @@ void APPCharacterBase::BeginPlay()
 	
 }
 
+void APPCharacterBase::Destroyed()
+{
+	Super::Destroyed();
+}
+
 void APPCharacterBase::CreateAllComps(bool bPostNetInit)
 {
 	for (auto &it: PPCompClasses)

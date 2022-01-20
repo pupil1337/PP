@@ -23,6 +23,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void PPInitComponent() override;
 	virtual void ChangeControllerRole() override;
+	virtual void OnUnregister() override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

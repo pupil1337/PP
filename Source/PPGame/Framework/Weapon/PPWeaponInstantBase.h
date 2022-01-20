@@ -6,6 +6,18 @@
 #include "PPWeaponBase.h"
 #include "PPWeaponInstantBase.generated.h"
 
+USTRUCT()
+struct FInstantInfo
+{
+	GENERATED_BODY()
+
+	FVector StartLocation;
+	FRotator StartRotation;
+
+	FVector HitLocation;
+	AActor* HitActor;
+};
+
 class UPPCrosshairWidget;
 class UParticleSystem;
 
