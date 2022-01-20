@@ -135,16 +135,12 @@ void UPPInputBindComp::JumpAction()
 
 void UPPInputBindComp::FirePressedAction()
 {
-	if (!bFiring)
-	{
-		bFiring = true;
-		OnFire.Broadcast(true);
-	}
+	OnFire.Broadcast(true);
 }
 
 void UPPInputBindComp::FireReleasedAction()
 {
-	bFiring = false;
+	OnFire.Broadcast(false);
 }
 
 void UPPInputBindComp::WeaponUp()

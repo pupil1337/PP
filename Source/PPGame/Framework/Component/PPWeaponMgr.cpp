@@ -194,11 +194,8 @@ void UPPWeaponMgr::OnFireState(bool Op)
 		if (IsValid(tComp))
 		{
 			// Animation
-			if (Op == tComp->InFiring())
-			{
-				EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
-				OwnerPawn->SetCustomAction(tAction);
-			}
+			EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
+			OwnerPawn->SetCustomAction(tAction);
 		}
 	}
 }
@@ -224,5 +221,13 @@ void UPPWeaponMgr::OnMuzzlePS()
 	if (IsValid(CurrWeapon))
 	{
 		CurrWeapon->PlayMuzzlePS();
+	}
+}
+
+void UPPWeaponMgr::OnFireSound()
+{
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->PlayFireSound();
 	}
 }

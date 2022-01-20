@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
+#include "Sound/SoundCue.h"
 
 const FName MUZZLE(TEXT("MuzzleFlashSocket"));
 
@@ -80,6 +81,14 @@ void APPWeaponBase::PlayMuzzlePS()
 	if (IsValid(MuzzlePS))
 	{
 		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE, {}, {}, EAttachLocation::SnapToTarget);
+	}
+}
+
+void APPWeaponBase::PlayFireSound()
+{
+	if (IsValid(FireSoundCue))
+	{
+		UGameplayStatics::SpawnSoundAttached(FireSoundCue, Mesh, MUZZLE);
 	}
 }
 

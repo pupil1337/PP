@@ -36,13 +36,14 @@ struct FWeaponCfg
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	float ValidDistance = 10000.0f;
+	float ValidDistance = 100000.0f;
 };
 
 class APPCharacter;
 class UPPCrosshairWidget;
 class UParticleSystem;
 class UParticleSystemComponent;
+class USoundCue;
 
 UCLASS()
 class PPGAME_API APPWeaponBase : public AActor
@@ -63,6 +64,8 @@ public:
 
 	UFUNCTION()
 	void PlayMuzzlePS();
+	UFUNCTION()
+	void PlayFireSound();
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
@@ -83,6 +86,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* MuzzlePS;
+
+	UPROPERTY(EditDefaultsOnly, Category="PP|Sounds")
+	USoundCue* FireSoundCue;
 
 	UPROPERTY()
 	UParticleSystemComponent* PSComp;

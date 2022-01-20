@@ -25,6 +25,7 @@ void UPPNotify_FireStart::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 				if (tPlayer->GetNetMode() != NM_DedicatedServer)
 				{
 					tComp->OnMuzzlePS();
+					tComp->OnFireSound();
 				}
 			}
 		}
