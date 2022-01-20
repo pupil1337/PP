@@ -70,7 +70,8 @@ bool APPWeaponBase::Fire()
 		{
 			CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
 			CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
-			CurrFireInfo.MuzzleLocation = GetMuzzleLocation();
+			CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
+			CurrFireInfo.MuzzleRotation = Mesh->GetSocketRotation(MUZZLE);
 		}
 	}
 	return true;
@@ -104,8 +105,6 @@ void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
 	FVector tEnd = tStart + tForward * WeaponCfg.ValidDistance;
 
 	Result.FireLocation = CurrFireInfo.MuzzleLocation;
-	Result.FireRotation = Mesh->GetSocketRotation(MUZZLE); Result.FireRotation.Normalize();
-	Result.HitLocation = tEnd;
 	
 	FCollisionQueryParams tParams;
 	tParams.AddIgnoredActor(OwnerPawn);
@@ -113,13 +112,18 @@ void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
 	bool bHit = GetWorld()->LineTraceSingleByChannel(tHitResult, tStart, tEnd, ECollisionChannel::ECC_Visibility, tParams);
 	if (bHit)
 	{
-		tEnd = tHitResult.Location;
-		FVector tFireForward = tEnd - tStart; tFireForward.Normalize();
-		if (FVector::DotProduct(tForward, tFireForward) > 0.0f)
+		FVector tFireForward = tHitResult.Location - Result.FireLocation; tFireForward.Normalize();
+		FVector tMuzzleForward = CurrFireInfo.MuzzleRotation.Vector(); tMuzzleForward.Normalize();
+		if (FVector::DotProduct(tMuzzleForward, tFireForward) > 0.0f)
 		{
 			Result.FireRotation = tFireForward.Rotation(); Result.FireRotation.Normalize();
-			Result.HitLocation = tEnd;
 			Result.HitActor = tHitResult.GetActor();
+			Result.HitLocation = tHitResult.Location;
+			return;
 		}
 	}
+
+	Result.HitLocation = tEnd;
+	FVector tNotHitForward = Result.HitLocation - Result.FireLocation; tNotHitForward.Normalize();
+	Result.FireRotation = tNotHitForward.Rotation(); Result.FireRotation.Normalize();
 }

@@ -15,6 +15,7 @@ struct FCurrFireInfo
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	FVector MuzzleLocation;
+	FRotator MuzzleRotation;
 };
 
 USTRUCT()
