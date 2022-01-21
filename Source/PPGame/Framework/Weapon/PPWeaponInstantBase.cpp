@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/Component/PPAttributeComp.h"
 
 APPWeaponInstantBase::APPWeaponInstantBase()
 {
@@ -17,13 +18,14 @@ void APPWeaponInstantBase::BeginPlay()
 	
 }
 
-bool APPWeaponInstantBase::Fire()
+bool APPWeaponInstantBase::Fire(bool Op)
 {
-	if (Super::Fire())
+	if (Super::Fire(Op))
 	{
 		FTraceResult tHit;
 		CalcTraceResult(tHit);
 		PlayTrailPS(tHit.FireLocation, tHit.FireRotation);
+		TakeDamage(tHit.HitActor);
 	}
 	return true;
 }

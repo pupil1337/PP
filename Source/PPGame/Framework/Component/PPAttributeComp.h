@@ -19,5 +19,21 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UPROPERTY(EditDefaultsOnly)
+	float HealthMax = 100.0f;
+	UPROPERTY(ReplicatedUsing=OnRep_Health)
+	float Health;
+
+	UFUNCTION()
+	void OnRep_Health(float PreHealth);
+
+public:
+	UFUNCTION()
+	void CalcDamage(AActor* Instigator, float& OutDamage);
+
+	UFUNCTION()
+	void TakeDamage(AActor* Instigator, float Damage);
 	
 };

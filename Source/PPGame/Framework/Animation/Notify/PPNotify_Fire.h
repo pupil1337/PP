@@ -4,15 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "PPNotify_FireStart.generated.h"
+#include "PPNotify_Fire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PPGAME_API UPPNotify_FireStart : public UAnimNotify
+class PPGAME_API UPPNotify_Fire : public UAnimNotify
 {
 	GENERATED_BODY()
 
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	bool FireStart = true;
 };

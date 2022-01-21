@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/Component/PPAttributeComp.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
 #include "Sound/SoundCue.h"
 
@@ -38,7 +39,8 @@ void APPWeaponBase::BeginPlay()
 					Crosshair->AddToViewport(0);
 				}
 			}
-		
+			CurrClipSize = WeaponCfg.ClipSize;
+			SpareClipSize = WeaponCfg.SpareSize;
 		}
 	}
 }
@@ -61,20 +63,45 @@ void APPWeaponBase::Aim(bool Op)
 	}
 }
 
-bool APPWeaponBase::Fire()
+void APPWeaponBase::Reload()
 {
 	if (IsValid(OwnerPawn))
 	{
-		APlayerController* tPC = Cast<APlayerController>(OwnerPawn->GetController());
-		if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
+		OwnerPawn->SetCustomAction(EPPCustomAction::ChangeClip);
+	}
+}
+
+bool APPWeaponBase::Fire(bool Op)
+{
+	if (IsValid(OwnerPawn))
+	{
+		if (Op == true)
 		{
-			CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
-			CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
-			CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
-			CurrFireInfo.MuzzleRotation = Mesh->GetSocketRotation(MUZZLE);
+			if (CurrClipSize == 0)
+			{
+				Reload();
+			}
+			else
+			{
+				APlayerController* tPC = Cast<APlayerController>(OwnerPawn->GetController());
+				if (IsValid(tPC) && IsValid(tPC->PlayerCameraManager))
+				{
+					CurrFireInfo.CameraLocation = tPC->PlayerCameraManager->GetCameraLocation();
+					CurrFireInfo.CameraRotation = tPC->PlayerCameraManager->GetCameraRotation();
+					CurrFireInfo.MuzzleLocation = Mesh->GetSocketLocation(MUZZLE);
+					CurrFireInfo.MuzzleRotation = Mesh->GetSocketRotation(MUZZLE);
+				}
+				--CurrClipSize;
+				OwnerPawn->SetCustomAction(EPPCustomAction::Fire);
+				return true;
+			}
+		}
+		else
+		{
+			OwnerPawn->SetCustomAction(EPPCustomAction::None);
 		}
 	}
-	return true;
+	return false;
 }
 
 void APPWeaponBase::PlayMuzzlePS()
@@ -126,4 +153,32 @@ void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
 	Result.HitLocation = tEnd;
 	FVector tNotHitForward = Result.HitLocation - Result.FireLocation; tNotHitForward.Normalize();
 	Result.FireRotation = tNotHitForward.Rotation(); Result.FireRotation.Normalize();
+}
+
+void APPWeaponBase::TakeDamage(AActor* Victim)
+{
+	if (IsValid(Victim))
+	{
+		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
+		{
+			Server_TakeDamage(Victim);
+		}
+		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
+		{
+			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
+			if (IsValid(tPlayer))
+			{
+				UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
+				if (IsValid(tComp))
+				{
+					tComp->TakeDamage(OwnerPawn, WeaponCfg.Damage);	
+				}
+			}
+		}
+	}
+}
+
+void APPWeaponBase::Server_TakeDamage_Implementation(AActor* Victim)
+{
+	TakeDamage(Victim);
 }

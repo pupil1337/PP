@@ -188,15 +188,10 @@ void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 
 void UPPWeaponMgr::OnFireState(bool Op)
 {
-	if (IsValid(OwnerPawn) && IsValid(CurrWeapon))
+	bFiring = Op;
+	if (Op)
 	{
-		UPPInputBindComp* tComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
-		if (IsValid(tComp))
-		{
-			// Animation
-			EPPCustomAction tAction = Op ? EPPCustomAction::Fire : EPPCustomAction::None;
-			OwnerPawn->SetCustomAction(tAction);
-		}
+		OnFire(Op);
 	}
 }
 
@@ -208,11 +203,25 @@ void UPPWeaponMgr::OnAimState(bool Op)
 	}
 }
 
-void UPPWeaponMgr::OnFire()
+void UPPWeaponMgr::OnFire(bool Op)
 {
-	if (IsValid(CurrWeapon))
+	if (IsValid(OwnerPawn) && IsValid(CurrWeapon))
 	{
-		CurrWeapon->Fire();
+		if (Op == true)
+		{
+			CurrWeapon->Fire(true);
+		}
+		else
+		{
+			if (bFiring)
+			{
+				OnFire(true);
+			}
+			else
+			{
+				CurrWeapon->Fire(false);
+			}
+		}
 	}
 }
 

@@ -40,6 +40,7 @@ protected:
 	UPROPERTY(ReplicatedUsing=OnRep_CurrWeapon)
 	APPWeaponBase* CurrWeapon;
 	int CurrIndex;
+	bool bFiring;
 	
 	void Equip(APPWeaponBase* NewWeapon, bool Force);
 	void OnWeaponChanged(APPWeaponBase* PreWeapon);
@@ -52,7 +53,7 @@ public:
 	UFUNCTION()
 	void OnAimState(bool Op);
 	UFUNCTION()
-	void OnFire();
+	void OnFire(bool Op);
 	UFUNCTION()
 	void OnMuzzlePS();
 	UFUNCTION()

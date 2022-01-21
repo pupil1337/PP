@@ -27,7 +27,8 @@ struct FTraceResult
 	FRotator FireRotation;
 
 	FVector HitLocation;
-	AActor* HitActor;
+	UPROPERTY()
+	AActor* HitActor = nullptr;
 	
 };
 
@@ -36,6 +37,14 @@ struct FWeaponCfg
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditDefaultsOnly)
+	float Damage = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	int ClipSize = 30;
+	UPROPERTY(EditDefaultsOnly)
+	int SpareSize = 300;
+	
 	UPROPERTY(EditDefaultsOnly)
 	float ValidDistance = 100000.0f;
 };
@@ -60,8 +69,9 @@ protected:
 public:
 	virtual void Equip();
 	virtual void UnEquip();
-	virtual bool Fire();
+	virtual bool Fire(bool Op);
 	virtual void Aim(bool Op);
+	virtual void Reload();
 
 	UFUNCTION()
 	void PlayMuzzlePS();
@@ -74,6 +84,9 @@ public:
 protected:
 	FVector GetMuzzleLocation();
 	void CalcTraceResult(FTraceResult& Result);
+	virtual void TakeDamage(AActor* Victim);
+	UFUNCTION(Server, Reliable)
+	virtual void Server_TakeDamage(AActor* Victim);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -101,5 +114,12 @@ protected:
 	APPCharacter* OwnerPawn;
 
 	/** Transient **/
+	UPROPERTY()
 	FCurrFireInfo CurrFireInfo;
+
+public:
+	UPROPERTY()
+	int CurrClipSize;
+	UPROPERTY()
+	int SpareClipSize;
 };
