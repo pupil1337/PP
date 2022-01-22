@@ -55,9 +55,7 @@ public:
 	UFUNCTION()
 	void OnFire(bool Op);
 	UFUNCTION()
-	void OnMuzzlePS();
-	UFUNCTION()
-	void OnFireSound();
+	void OnReload(bool Start);
 
 	UFUNCTION()
 	void OnSwitchWeapon(bool Up);

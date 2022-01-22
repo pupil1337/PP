@@ -18,14 +18,9 @@ void UPPNotify_Fire::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase*
 			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(tPlayer->GetComponentByClass(UPPWeaponMgr::StaticClass()));
 			if (IsValid(tComp))
 			{
-				if (tPlayer->IsLocallyControlled() && !FireStart)
+				if (tPlayer->IsLocallyControlled())
 				{
-                  	tComp->OnFire(FireStart);
-				}
-				else if (tPlayer->GetNetMode() != NM_DedicatedServer)
-				{
-					tComp->OnFireSound();
-					tComp->OnMuzzlePS();
+                  	tComp->OnFire(false);
 				}
 			}
 		}

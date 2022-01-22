@@ -93,6 +93,7 @@ void UPPWeaponMgr::ChangeControllerRole()
 		if (IsValid(tComp))
 		{
 			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFireState);
+			tComp->OnReload.AddUniqueDynamic(this, &UPPWeaponMgr::OnReload);
 			tComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAimState);
 			tComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
 		}
@@ -225,18 +226,10 @@ void UPPWeaponMgr::OnFire(bool Op)
 	}
 }
 
-void UPPWeaponMgr::OnMuzzlePS()
+void UPPWeaponMgr::OnReload(bool Start)
 {
 	if (IsValid(CurrWeapon))
 	{
-		CurrWeapon->PlayMuzzlePS();
-	}
-}
-
-void UPPWeaponMgr::OnFireSound()
-{
-	if (IsValid(CurrWeapon))
-	{
-		CurrWeapon->PlayFireSound();
+		CurrWeapon->Reload(Start);
 	}
 }

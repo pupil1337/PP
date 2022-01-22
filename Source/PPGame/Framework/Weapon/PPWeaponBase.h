@@ -71,12 +71,7 @@ public:
 	virtual void UnEquip();
 	virtual bool Fire(bool Op);
 	virtual void Aim(bool Op);
-	virtual void Reload();
-
-	UFUNCTION()
-	void PlayMuzzlePS();
-	UFUNCTION()
-	void PlayFireSound();
+	virtual void Reload(bool Start);
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
@@ -87,6 +82,11 @@ protected:
 	virtual void TakeDamage(AActor* Victim);
 	UFUNCTION(Server, Reliable)
 	virtual void Server_TakeDamage(AActor* Victim);
+	void PlayEffect();
+	UFUNCTION(Server, Unreliable)
+	void Server_PlayEffect();
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_PlayEffect();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)

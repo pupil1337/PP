@@ -59,6 +59,7 @@ void UPPInputBindComp::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		PlayerInputComponent->BindAction("FireAction", IE_Pressed, this, &UPPInputBindComp::FirePressedAction);
 		PlayerInputComponent->BindAction("FireAction", IE_Released, this, &UPPInputBindComp::FireReleasedAction);
 		PlayerInputComponent->BindAction("JumpAction", IE_Pressed, this, &UPPInputBindComp::JumpAction);
+		PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &UPPInputBindComp::ReloadAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Pressed, this, &UPPInputBindComp::AimPressedAction);
 		PlayerInputComponent->BindAction("AimAction", IE_Released, this, &UPPInputBindComp::AimReleasedAction);
 		PlayerInputComponent->BindAction("WeaponUp", IE_Pressed, this, &UPPInputBindComp::WeaponUp);
@@ -130,6 +131,14 @@ void UPPInputBindComp::JumpAction()
 	if (IsValid(OwnerPawn))
 	{
 		OwnerPawn->Jump();
+	}
+}
+
+void UPPInputBindComp::ReloadAction()
+{
+	if (IsValid(OwnerPawn))
+	{
+		OnReload.Broadcast(true);
 	}
 }
 

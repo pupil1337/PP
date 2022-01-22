@@ -6,6 +6,9 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "PPNotify_Fire.generated.h"
 
+class APPCharacter;
+class UPPWeaponMgr;
+
 /**
  * 
  */
@@ -15,8 +18,4 @@ class PPGAME_API UPPNotify_Fire : public UAnimNotify
 	GENERATED_BODY()
 
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
-
-protected:
-	UPROPERTY(EditAnywhere)
-	bool FireStart = true;
 };

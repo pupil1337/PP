@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/Component/PPAttributeComp.h"
+#include "PPGame/Framework/Component/PPWeaponMgr.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
 #include "Sound/SoundCue.h"
 
@@ -63,11 +64,37 @@ void APPWeaponBase::Aim(bool Op)
 	}
 }
 
-void APPWeaponBase::Reload()
+void APPWeaponBase::Reload(bool Start)
 {
 	if (IsValid(OwnerPawn))
 	{
-		OwnerPawn->SetCustomAction(EPPCustomAction::ChangeClip);
+		if (Start)
+		{
+			if (CurrClipSize < WeaponCfg.ClipSize)
+			{
+				OwnerPawn->SetCustomAction(EPPCustomAction::ChangeClip);
+			}
+		}
+		else
+		{
+			if (CurrClipSize < WeaponCfg.ClipSize)
+			{
+				CurrClipSize += SpareClipSize;
+				SpareClipSize = 0;
+				int tOver = CurrClipSize - WeaponCfg.ClipSize;
+				if (tOver > 0)
+				{
+					CurrClipSize = WeaponCfg.ClipSize;
+					SpareClipSize = tOver;
+				}
+			}
+
+			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(OwnerPawn->GetComponentByClass(UPPWeaponMgr::StaticClass()));
+			if (IsValid(tComp))
+			{
+				tComp->OnFire(false);
+			}
+		}
 	}
 }
 
@@ -79,7 +106,7 @@ bool APPWeaponBase::Fire(bool Op)
 		{
 			if (CurrClipSize == 0)
 			{
-				Reload();
+				Reload(true);
 			}
 			else
 			{
@@ -93,6 +120,7 @@ bool APPWeaponBase::Fire(bool Op)
 				}
 				--CurrClipSize;
 				OwnerPawn->SetCustomAction(EPPCustomAction::Fire);
+				PlayEffect();
 				return true;
 			}
 		}
@@ -102,22 +130,6 @@ bool APPWeaponBase::Fire(bool Op)
 		}
 	}
 	return false;
-}
-
-void APPWeaponBase::PlayMuzzlePS()
-{
-	if (IsValid(MuzzlePS))
-	{
-		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE, {}, {}, EAttachLocation::SnapToTarget);
-	}
-}
-
-void APPWeaponBase::PlayFireSound()
-{
-	if (IsValid(FireSoundCue))
-	{
-		UGameplayStatics::SpawnSoundAttached(FireSoundCue, Mesh, MUZZLE);
-	}
 }
 
 FVector APPWeaponBase::GetMuzzleLocation()
@@ -175,6 +187,41 @@ void APPWeaponBase::TakeDamage(AActor* Victim)
 				}
 			}
 		}
+	}
+}
+
+void APPWeaponBase::PlayEffect()
+{
+	if (IsValid(MuzzlePS))
+	{
+		UGameplayStatics::SpawnEmitterAttached(MuzzlePS, Mesh, MUZZLE, {}, {0.0f, -90.0f, 0.0f}, EAttachLocation::SnapToTarget);
+	}
+
+	if (IsValid(FireSoundCue))
+	{
+		UGameplayStatics::SpawnSoundAttached(FireSoundCue, Mesh, MUZZLE);
+	}
+
+	if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		Server_PlayEffect();
+	}
+	else if (GetNetMode() == NM_ListenServer)
+	{
+		Multi_PlayEffect();
+	}
+}
+
+void APPWeaponBase::Server_PlayEffect_Implementation()
+{
+	Multi_PlayEffect();
+}
+
+void APPWeaponBase::Multi_PlayEffect_Implementation()
+{
+	if (OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
+	{
+		PlayEffect();
 	}
 }
 
