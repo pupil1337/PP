@@ -149,6 +149,18 @@ void UPPWeaponMgr::OnWeaponChanged(APPWeaponBase* PreWeapon)
 					OwnerPawn->PlayAnimMontage(tMontage);
 				}
 			}
+			if (OwnerPawn->IsLocallyControlled())
+			{
+				if (bFiring)
+				{
+					OwnerPawn->SetCustomAction(EPPCustomAction::Fire);
+				}
+				else
+				{
+					OwnerPawn->SetCustomAction(EPPCustomAction::None);
+				}
+				bChangeClip = false;
+			}
 		}
 	}
 }
@@ -210,7 +222,10 @@ void UPPWeaponMgr::OnFire(bool Op)
 	{
 		if (Op == true)
 		{
-			CurrWeapon->Fire(true);
+			if (!bChangeClip)
+			{
+				CurrWeapon->Fire(true);
+			}
 		}
 		else
 		{
@@ -230,6 +245,7 @@ void UPPWeaponMgr::OnReload(bool Start)
 {
 	if (IsValid(CurrWeapon))
 	{
+		bChangeClip = Start;
 		CurrWeapon->Reload(Start);
 	}
 }

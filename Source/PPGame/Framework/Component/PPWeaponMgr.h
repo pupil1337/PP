@@ -41,6 +41,7 @@ protected:
 	APPWeaponBase* CurrWeapon;
 	int CurrIndex;
 	bool bFiring;
+	bool bChangeClip;
 	
 	void Equip(APPWeaponBase* NewWeapon, bool Force);
 	void OnWeaponChanged(APPWeaponBase* PreWeapon);
