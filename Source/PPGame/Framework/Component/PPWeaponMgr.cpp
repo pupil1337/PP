@@ -3,6 +3,7 @@
 
 #include "PPWeaponMgr.h"
 
+#include "PPAttributeComp.h"
 #include "PPInputBindComp.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -89,13 +90,19 @@ void UPPWeaponMgr::ChangeControllerRole()
 
 	if (IsValid(OwnerPawn))
 	{
-		UPPInputBindComp* tComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
-		if (IsValid(tComp))
+		UPPInputBindComp* tInputBindComp = Cast<UPPInputBindComp>(OwnerPawn->GetComponentByClass(UPPInputBindComp::StaticClass()));
+		if (IsValid(tInputBindComp))
 		{
-			tComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFireState);
-			tComp->OnReload.AddUniqueDynamic(this, &UPPWeaponMgr::OnReload);
-			tComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAimState);
-			tComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
+			tInputBindComp->OnFire.AddUniqueDynamic(this, &UPPWeaponMgr::OnFireState);
+			tInputBindComp->OnReload.AddUniqueDynamic(this, &UPPWeaponMgr::OnReload);
+			tInputBindComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAimState);
+			tInputBindComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
+		}
+
+		UPPAttributeComp* tAttrComp = Cast<UPPAttributeComp>(OwnerPawn->GetComponentByClass(UPPAttributeComp::StaticClass()));
+		if (IsValid(tAttrComp))
+		{
+			tAttrComp->OnDead.AddUniqueDynamic(this, &UPPWeaponMgr::OnDead);
 		}
 	}
 }
@@ -180,7 +187,7 @@ void UPPWeaponMgr::OnRep_CurrWeapon(APPWeaponBase* PreWeapon)
 
 void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 {
-	if (WeaponList.Num() > 0)
+	if (Active && WeaponList.Num() > 0)
 	{
 		CurrIndex += Up ? -1 : 1;
         if (CurrIndex < 0)
@@ -199,6 +206,20 @@ void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 	}
 }
 
+void UPPWeaponMgr::OnDead()
+{
+	Active = false;
+	Server_OnDead();
+}
+
+void UPPWeaponMgr::Server_OnDead_Implementation()
+{
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->SetActorHiddenInGame(true);
+	}
+}
+
 void UPPWeaponMgr::OnFireState(bool Op)
 {
 	bFiring = Op;
@@ -210,7 +231,7 @@ void UPPWeaponMgr::OnFireState(bool Op)
 
 void UPPWeaponMgr::OnAimState(bool Op)
 {
-	if (IsValid(CurrWeapon))
+	if (Active && IsValid(CurrWeapon))
 	{
 		CurrWeapon->Aim(Op);
 	}
@@ -218,7 +239,7 @@ void UPPWeaponMgr::OnAimState(bool Op)
 
 void UPPWeaponMgr::OnFire(bool Op)
 {
-	if (IsValid(OwnerPawn) && IsValid(CurrWeapon))
+	if (Active && IsValid(OwnerPawn) && IsValid(CurrWeapon))
 	{
 		if (Op == true)
 		{
@@ -243,7 +264,7 @@ void UPPWeaponMgr::OnFire(bool Op)
 
 void UPPWeaponMgr::OnReload(bool Start)
 {
-	if (IsValid(CurrWeapon))
+	if (Active && IsValid(CurrWeapon))
 	{
 		bChangeClip = Start;
 		CurrWeapon->Reload(Start);

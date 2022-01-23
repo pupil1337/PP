@@ -42,6 +42,7 @@ protected:
 	int CurrIndex;
 	bool bFiring;
 	bool bChangeClip;
+	bool Active = true;
 	
 	void Equip(APPWeaponBase* NewWeapon, bool Force);
 	void OnWeaponChanged(APPWeaponBase* PreWeapon);
@@ -60,5 +61,10 @@ public:
 
 	UFUNCTION()
 	void OnSwitchWeapon(bool Up);
+
+	UFUNCTION()
+	void OnDead();
+	UFUNCTION(Server, Reliable)
+	void Server_OnDead();
 	
 };

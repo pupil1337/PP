@@ -6,6 +6,10 @@
 #include "PPCompBase.h"
 #include "PPAttributeComp.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
+
+class UAnimMontage;
+
 /**
  * 
  */
@@ -17,6 +21,8 @@ class PPGAME_API UPPAttributeComp : public UPPCompBase
 public:
 	UPPAttributeComp();
 
+	FOnDead OnDead;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -25,6 +31,8 @@ protected:
 	float HealthMax = 100.0f;
 	UPROPERTY(ReplicatedUsing=OnRep_Health)
 	float Health;
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* DeadMontage;
 
 	UFUNCTION()
 	void OnRep_Health(float PreHealth);
@@ -35,5 +43,12 @@ public:
 
 	UFUNCTION()
 	void TakeDamage(AActor* Instigator, float Damage);
+
+	UFUNCTION()
+	void Dead(AActor* Instigator);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_Dead(AActor* Instigator);
+	UFUNCTION(Client, Reliable)
+	void Client_Dead(AActor* Instigator);
 	
 };

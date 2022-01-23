@@ -3,7 +3,10 @@
 
 #include "PPAttributeComp.h"
 
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PPGame/Framework/PPCharacter.h"
 
 UPPAttributeComp::UPPAttributeComp()
 {
@@ -26,7 +29,7 @@ void UPPAttributeComp::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UPPAttributeComp::OnRep_Health(float PreHealth)
 {
-	int a = 1;
+	
 }
 
 void UPPAttributeComp::CalcDamage(AActor* Instigator, float& OutDamage)
@@ -35,5 +38,34 @@ void UPPAttributeComp::CalcDamage(AActor* Instigator, float& OutDamage)
 
 void UPPAttributeComp::TakeDamage(AActor* Instigator, float Damage)
 {
-	Health -= Damage;
+	if (Health > 0)
+	{
+		Health -= Damage;
+		if (Health <= 0)
+		{
+			Health = 0;
+			Dead(Instigator);
+		}
+	}
+}
+
+void UPPAttributeComp::Dead(AActor* Instigator)
+{
+	OwnerPawn->GetCharacterMovement()->DisableMovement();
+	Multi_Dead(Instigator);
+	Client_Dead(Instigator);
+}
+
+void UPPAttributeComp::Client_Dead_Implementation(AActor* Instigator)
+{
+	OnDead.Broadcast();
+}
+
+void UPPAttributeComp::Multi_Dead_Implementation(AActor* Instigator)
+{
+	if (IsValid(DeadMontage))
+	{
+		OwnerPawn->PlayAnimMontage(DeadMontage, 0.3f);
+		OwnerPawn->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
