@@ -264,9 +264,8 @@ void UPPWeaponMgr::OnFire(bool Op)
 
 void UPPWeaponMgr::OnReload(bool Start)
 {
-	if (Active && IsValid(CurrWeapon))
+	if (Active &&  IsValid(CurrWeapon) && (!Start || !bChangeClip))
 	{
-		bChangeClip = Start;
-		CurrWeapon->Reload(Start);
+		bChangeClip = CurrWeapon->Reload(Start);
 	}
 }

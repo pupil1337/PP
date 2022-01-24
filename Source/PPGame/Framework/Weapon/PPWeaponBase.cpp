@@ -66,7 +66,7 @@ void APPWeaponBase::Aim(bool Op)
 	}
 }
 
-void APPWeaponBase::Reload(bool Start)
+bool APPWeaponBase::Reload(bool Start)
 {
 	if (IsValid(OwnerPawn))
 	{
@@ -75,6 +75,7 @@ void APPWeaponBase::Reload(bool Start)
 			if (CurrClipSize < WeaponCfg.ClipSize)
 			{
 				OwnerPawn->SetCustomAction(EPPCustomAction::ChangeClip);
+				return true;
 			}
 		}
 		else
@@ -99,6 +100,7 @@ void APPWeaponBase::Reload(bool Start)
 			}
 		}
 	}
+	return false;
 }
 
 bool APPWeaponBase::Fire(bool Op)

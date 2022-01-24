@@ -71,7 +71,7 @@ public:
 	virtual void UnEquip();
 	virtual bool Fire(bool Op);
 	virtual void Aim(bool Op);
-	virtual void Reload(bool Start);
+	virtual bool Reload(bool Start);
 	
 	UPROPERTY(EditDefaultsOnly)
 	EPPOverlayState WeaponType;
