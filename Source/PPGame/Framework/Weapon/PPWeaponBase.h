@@ -87,6 +87,8 @@ protected:
 	void Server_PlayEffect();
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_PlayEffect();
+	UFUNCTION()
+	void OnWeaponEvent();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -118,8 +120,8 @@ protected:
 	FCurrFireInfo CurrFireInfo;
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int CurrClipSize;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int SpareClipSize;
 };

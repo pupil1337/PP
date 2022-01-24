@@ -18,7 +18,6 @@ struct FInstantInfo
 	AActor* HitActor;
 };
 
-class UPPCrosshairWidget;
 class UParticleSystem;
 
 /**

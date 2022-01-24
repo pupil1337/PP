@@ -3,6 +3,7 @@
 
 #include "PPAttributeComp.h"
 
+#include "PPUIMgr.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -24,12 +25,19 @@ void UPPAttributeComp::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(UPPAttributeComp, Health, COND_SimulatedOnly);
+	DOREPLIFETIME_CONDITION(UPPAttributeComp, Health, COND_AutonomousOnly);
 }
 
 void UPPAttributeComp::OnRep_Health(float PreHealth)
 {
-	
+	if (IsValid(OwnerPawn))
+	{
+		UPPUIMgr* tComp = Cast<UPPUIMgr>(OwnerPawn->GetComponentByClass(UPPUIMgr::StaticClass()));
+		if (IsValid(tComp))
+		{
+			tComp->OnHealth(Health);
+		}
+	}
 }
 
 void UPPAttributeComp::CalcDamage(AActor* Instigator, float& OutDamage)
@@ -40,10 +48,14 @@ void UPPAttributeComp::TakeDamage(AActor* Instigator, float Damage)
 {
 	if (Health > 0)
 	{
-		Health -= Damage;
-		if (Health <= 0)
+		float PreHealth = Health;
+		Health = FMath::Clamp(PreHealth - Damage, 0.0f, HealthMax);
+		if (OwnerPawn->IsLocallyControlled())
 		{
-			Health = 0;
+			OnRep_Health(PreHealth);
+		}
+		if (Health == 0)
+		{
 			Dead(Instigator);
 		}
 	}

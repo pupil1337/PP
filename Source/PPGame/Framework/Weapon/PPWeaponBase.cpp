@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/Component/PPAttributeComp.h"
+#include "PPGame/Framework/Component/PPUIMgr.h"
 #include "PPGame/Framework/Component/PPWeaponMgr.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
 #include "Sound/SoundCue.h"
@@ -49,6 +50,7 @@ void APPWeaponBase::BeginPlay()
 void APPWeaponBase::Equip()
 {
 	SetActorHiddenInGame(false);
+	OnWeaponEvent();
 }
 
 void APPWeaponBase::UnEquip()
@@ -87,6 +89,7 @@ void APPWeaponBase::Reload(bool Start)
 					CurrClipSize = WeaponCfg.ClipSize;
 					SpareClipSize = tOver;
 				}
+				OnWeaponEvent();
 			}
 
 			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(OwnerPawn->GetComponentByClass(UPPWeaponMgr::StaticClass()));
@@ -121,6 +124,7 @@ bool APPWeaponBase::Fire(bool Op)
 				--CurrClipSize;
 				OwnerPawn->SetCustomAction(EPPCustomAction::Fire);
 				PlayEffect();
+				OnWeaponEvent();
 				return true;
 			}
 		}
@@ -209,6 +213,18 @@ void APPWeaponBase::PlayEffect()
 	else if (GetNetMode() == NM_ListenServer)
 	{
 		Multi_PlayEffect();
+	}
+}
+
+void APPWeaponBase::OnWeaponEvent()
+{
+	if (IsValid(OwnerPawn) && OwnerPawn->IsLocallyControlled())
+	{
+		UPPUIMgr* tComp = Cast<UPPUIMgr>(OwnerPawn->GetComponentByClass(UPPUIMgr::StaticClass()));
+		if (IsValid(tComp))
+		{
+			tComp->OnWeapon(CurrClipSize, SpareClipSize);
+		}
 	}
 }
 
