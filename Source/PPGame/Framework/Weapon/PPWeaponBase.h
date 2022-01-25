@@ -79,9 +79,9 @@ public:
 protected:
 	FVector GetMuzzleLocation();
 	void CalcTraceResult(FTraceResult& Result);
-	virtual void TakeDamage(AActor* Victim);
+	virtual void TakeDamageTo(AActor* Victim);
 	UFUNCTION(Server, Reliable)
-	virtual void Server_TakeDamage(AActor* Victim);
+	virtual void Server_TakeDamageTo(AActor* Victim);
 	void PlayEffect();
 	UFUNCTION(Server, Unreliable)
 	void Server_PlayEffect();

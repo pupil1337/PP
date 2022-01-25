@@ -173,13 +173,13 @@ void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
 	Result.FireRotation = tNotHitForward.Rotation(); Result.FireRotation.Normalize();
 }
 
-void APPWeaponBase::TakeDamage(AActor* Victim)
+void APPWeaponBase::TakeDamageTo(AActor* Victim)
 {
 	if (IsValid(Victim))
 	{
 		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
 		{
-			Server_TakeDamage(Victim);
+			Server_TakeDamageTo(Victim);
 		}
 		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
 		{
@@ -243,7 +243,7 @@ void APPWeaponBase::Multi_PlayEffect_Implementation()
 	}
 }
 
-void APPWeaponBase::Server_TakeDamage_Implementation(AActor* Victim)
+void APPWeaponBase::Server_TakeDamageTo_Implementation(AActor* Victim)
 {
-	TakeDamage(Victim);
+	TakeDamageTo(Victim);
 }

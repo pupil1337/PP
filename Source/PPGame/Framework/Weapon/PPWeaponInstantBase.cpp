@@ -25,7 +25,7 @@ bool APPWeaponInstantBase::Fire(bool Op)
 		FTraceResult tHit;
 		CalcTraceResult(tHit);
 		PlayTrailPS(tHit.FireLocation, tHit.FireRotation);
-		TakeDamage(tHit.HitActor);
+		TakeDamageTo(tHit.HitActor);
 		float tTime = UGameplayStatics::GetTimeSeconds(this);
 		UE_LOG(LogTemp, Log, TEXT("%f"), tTime);
 	}
