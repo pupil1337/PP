@@ -190,7 +190,14 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 
 	if (HitResult.IsValidBlockingHit())
 	{
-		TargetCameraLocation += HitResult.Location - HitResult.TraceEnd;
+		UPrimitiveComponent* tComp = HitResult.GetComponent();
+		if (IsValid(tComp))
+		{
+			if (tComp->GetCollisionObjectType() == ECollisionChannel::ECC_WorldStatic)
+			{
+				TargetCameraLocation += HitResult.Location - HitResult.TraceEnd;
+			}
+		}
 	}
 
 	// Step 8: Lerp First Person Override and return target camera parameters.

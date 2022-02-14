@@ -15,13 +15,13 @@ APPMonsterBase::APPMonsterBase()
 	
 }
 
-void APPMonsterBase::TakeDamage(float InDamage, AActor* Victim)
+void APPMonsterBase::TakeDamage(float InDamage, AActor* instigator)
 {
 	if (InDamage > 0.0f)
 	{
-		if (IsValid(Victim))
+		if (IsValid(instigator))
 		{
-			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
+			APPCharacter* tPlayer = Cast<APPCharacter>(instigator);
 			if (IsValid(tPlayer))
 			{
 				Health -= InDamage;
@@ -45,6 +45,10 @@ void APPMonsterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		Health = HealthMax;
+	}
 }
 
 void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)

@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/AI/PPMonsterBase.h"
 #include "PPGame/Framework/Component/PPAttributeComp.h"
 #include "PPGame/Framework/Component/PPUIMgr.h"
 #include "PPGame/Framework/Component/PPWeaponMgr.h"
@@ -183,6 +184,7 @@ void APPWeaponBase::TakeDamageTo(AActor* Victim)
 		}
 		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
 		{
+			// 1、打到玩家
 			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
 			if (IsValid(tPlayer))
 			{
@@ -191,6 +193,13 @@ void APPWeaponBase::TakeDamageTo(AActor* Victim)
 				{
 					tComp->TakeDamage(OwnerPawn, WeaponCfg.Damage);	
 				}
+			}
+
+			// 2、打到怪物
+			APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
+			if (IsValid(tMonster))
+			{
+				tMonster->TakeDamage(WeaponCfg.Damage, OwnerPawn);
 			}
 		}
 	}

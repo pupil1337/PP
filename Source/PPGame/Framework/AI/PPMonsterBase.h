@@ -30,7 +30,7 @@ class PPGAME_API APPMonsterBase : public ACharacter
 public:
 	APPMonsterBase();
 
-	virtual void TakeDamage(float InDamage, AActor* Victim);
+	virtual void TakeDamage(float InDamage, AActor* instigator);
 	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_PlayAnimMontage(UAnimMontage* Montage);
