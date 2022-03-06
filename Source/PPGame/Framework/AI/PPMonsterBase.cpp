@@ -5,7 +5,10 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 
 
@@ -17,7 +20,7 @@ APPMonsterBase::APPMonsterBase()
 
 void APPMonsterBase::TakeDamage(float InDamage, AActor* instigator)
 {
-	if (InDamage > 0.0f)
+	if (InDamage > 0.0f && bCanTakeDamage)
 	{
 		if (IsValid(instigator))
 		{
@@ -66,7 +69,23 @@ void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)
 
 void APPMonsterBase::Dead()
 {
+	bCanTakeDamage = false;
+
+	// 设置行为树
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (IsValid(AIController))
+	{
+		UBlackboardComponent* tBBComp = AIController->GetBlackboardComponent();
+		if (IsValid(tBBComp))
+		{
+			tBBComp->SetValue<UBlackboardKeyType_Bool>(TEXT("bDead"), true);
+		}
+	}
 	
+	Multi_CollisionDisable();
+	GetCharacterMovement()->DisableMovement();
+	Multi_PlayAnimMontage(DeadMontage);
+	DetachFromControllerPendingDestroy();
 }
 
 void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
@@ -75,4 +94,9 @@ void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 	{
 		PlayAnimMontage(Montage);	
 	}
+}
+
+void APPMonsterBase::Multi_CollisionDisable_Implementation()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

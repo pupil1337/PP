@@ -35,6 +35,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_PlayAnimMontage(UAnimMontage* Montage);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_CollisionDisable();
+
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
 	
 protected:
@@ -47,6 +50,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FMonsterSkill> MonsterSkills;
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* DeadMontage;
 
 	UFUNCTION()
 	void SetEnemy(APPCharacter* InEnemy);
@@ -57,5 +62,7 @@ protected:
 private:
 	UPROPERTY()
 	APPCharacter* Enemy = nullptr;
+
+	bool bCanTakeDamage = true;
 	
 };
