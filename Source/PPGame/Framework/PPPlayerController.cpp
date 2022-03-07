@@ -4,6 +4,14 @@
 
 #include "PPCharacter.h"
 #include "PPPlayerCameraManager.h"
+#include "Net/UnrealNetwork.h"
+
+void APPPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(APPPlayerController, PlayerName);
+}
 
 void APPPlayerController::OnPossess(APawn* NewPawn)
 {

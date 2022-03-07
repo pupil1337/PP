@@ -17,6 +17,7 @@ class PPGAME_API APPPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnPossess(APawn* NewPawn) override;
 
 	virtual void OnRep_Pawn() override;
@@ -27,4 +28,7 @@ private:
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS Player Controller")
 	APPCharacter* PossessedCharacter = nullptr;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FString PlayerName;
 };
