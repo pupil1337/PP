@@ -22,6 +22,9 @@ public:
 
 	virtual void OnRep_Pawn() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRep_GetName();
+
 private:
 	void SetupCamera();
 
@@ -29,6 +32,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS Player Controller")
 	APPCharacter* PossessedCharacter = nullptr;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing = OnRep_GetName,  BlueprintReadOnly)
 	FString PlayerName;
 };
