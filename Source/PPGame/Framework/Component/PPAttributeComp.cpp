@@ -6,6 +6,8 @@
 #include "PPUIMgr.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "PPGame/Framework/PPCharacter.h"
 
@@ -66,6 +68,9 @@ void UPPAttributeComp::Dead(AActor* Instigator)
 	OwnerPawn->GetCharacterMovement()->DisableMovement();
 	Multi_Dead(Instigator);
 	Client_Dead(Instigator);
+
+	FTimerHandle tHandle;
+	GetWorld()->GetTimerManager().SetTimer(tHandle, this, &UPPAttributeComp::ReSpawn, 3.0f);
 }
 
 void UPPAttributeComp::Client_Dead_Implementation(AActor* Instigator)
@@ -79,5 +84,36 @@ void UPPAttributeComp::Multi_Dead_Implementation(AActor* Instigator)
 	{
 		OwnerPawn->PlayAnimMontage(DeadMontage, 0.3f);
 		OwnerPawn->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void UPPAttributeComp::ReSpawn()
+{
+	Health = HealthMax;
+	OwnerPawn->GetCharacterMovement()->SetDefaultMovementMode();
+	OwnerPawn->SetActorHiddenInGame(false);
+	Multi_ReSpawn();
+	Client_ReSpawn();
+
+	TArray<AActor*> tFoundArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), tFoundArray);
+	if (tFoundArray.Num() > 0)
+	{
+		APlayerStart* tStart = Cast<APlayerStart>(tFoundArray[0]);
+		OwnerPawn->SetActorLocationAndRotation(tStart->GetActorLocation(), tStart->GetActorRotation());
+	}
+}
+
+void UPPAttributeComp::Client_ReSpawn_Implementation()
+{
+	OnReSpawn.Broadcast();
+}
+
+void UPPAttributeComp::Multi_ReSpawn_Implementation()
+{
+	if (IsValid(DeadMontage))
+	{
+		OwnerPawn->StopAnimMontage();
+		OwnerPawn->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 }

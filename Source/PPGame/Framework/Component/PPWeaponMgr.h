@@ -68,5 +68,10 @@ public:
 	void OnDead();
 	UFUNCTION(Server, Reliable)
 	void Server_OnDead();
+
+	UFUNCTION()
+	void OnReSpawn();
+	UFUNCTION(Server, Reliable)
+	void Server_ReSpawn();
 	
 };

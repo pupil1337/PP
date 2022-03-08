@@ -103,6 +103,7 @@ void UPPWeaponMgr::ChangeControllerRole()
 		if (IsValid(tAttrComp))
 		{
 			tAttrComp->OnDead.AddUniqueDynamic(this, &UPPWeaponMgr::OnDead);
+			tAttrComp->OnReSpawn.AddUniqueDynamic(this, &UPPWeaponMgr::OnReSpawn);
 		}
 	}
 }
@@ -217,6 +218,20 @@ void UPPWeaponMgr::Server_OnDead_Implementation()
 	if (IsValid(CurrWeapon))
 	{
 		CurrWeapon->SetActorHiddenInGame(true);
+	}
+}
+
+void UPPWeaponMgr::OnReSpawn()
+{
+	Active = true;
+	Server_ReSpawn();
+}
+
+void UPPWeaponMgr::Server_ReSpawn_Implementation()
+{
+	if (IsValid(CurrWeapon))
+	{
+		CurrWeapon->SetActorHiddenInGame(false);
 	}
 }
 

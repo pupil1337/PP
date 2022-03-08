@@ -7,6 +7,7 @@
 #include "PPAttributeComp.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReSpawn);
 
 class UAnimMontage;
 
@@ -22,6 +23,7 @@ public:
 	UPPAttributeComp();
 
 	FOnDead OnDead;
+	FOnReSpawn OnReSpawn;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -50,5 +52,12 @@ public:
 	void Multi_Dead(AActor* Instigator);
 	UFUNCTION(Client, Reliable)
 	void Client_Dead(AActor* Instigator);
+
+	UFUNCTION()
+	void ReSpawn();
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_ReSpawn();
+	UFUNCTION(Client, Reliable)
+	void Client_ReSpawn();
 	
 };
