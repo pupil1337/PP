@@ -97,7 +97,7 @@ bool APPWeaponBase::Reload(bool Start)
 			UPPWeaponMgr* tComp = Cast<UPPWeaponMgr>(OwnerPawn->GetComponentByClass(UPPWeaponMgr::StaticClass()));
 			if (IsValid(tComp))
 			{
-				tComp->OnFire(false);
+				tComp->OnReloadEnd();
 			}
 		}
 	}

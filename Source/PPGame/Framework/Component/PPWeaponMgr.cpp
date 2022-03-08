@@ -254,7 +254,7 @@ void UPPWeaponMgr::OnFire(bool Op)
 			{
 				OnFire(true);
 			}
-			else
+			else if(!bChangeClip)
 			{
 				CurrWeapon->Fire(false);
 			}
@@ -267,5 +267,17 @@ void UPPWeaponMgr::OnReload(bool Start)
 	if (Active &&  IsValid(CurrWeapon) && (!Start || !bChangeClip))
 	{
 		bChangeClip = CurrWeapon->Reload(Start);
+	}
+}
+
+void UPPWeaponMgr::OnReloadEnd()
+{
+	if (bFiring)
+	{
+		OnFire(true);
+	}
+	else
+	{
+		OwnerPawn->SetCustomAction(EPPCustomAction::None);
 	}
 }

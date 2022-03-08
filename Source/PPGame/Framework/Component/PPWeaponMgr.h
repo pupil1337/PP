@@ -58,6 +58,8 @@ public:
 	void OnFire(bool Op);
 	UFUNCTION()
 	void OnReload(bool Start);
+	UFUNCTION()
+	void OnReloadEnd();
 
 	UFUNCTION()
 	void OnSwitchWeapon(bool Up);
