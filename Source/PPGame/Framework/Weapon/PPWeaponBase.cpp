@@ -199,7 +199,7 @@ void APPWeaponBase::TakeDamageTo(AActor* Victim)
 			APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
 			if (IsValid(tMonster))
 			{
-				tMonster->TakeDamage(WeaponCfg.Damage, OwnerPawn);
+				tMonster->MonsterTakeDamage(WeaponCfg.Damage, OwnerPawn);
 			}
 		}
 	}

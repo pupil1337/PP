@@ -18,7 +18,7 @@ APPMonsterBase::APPMonsterBase()
 	
 }
 
-void APPMonsterBase::TakeDamage(float InDamage, AActor* instigator)
+void APPMonsterBase::MonsterTakeDamage(float InDamage, AActor* instigator)
 {
 	if (InDamage > 0.0f && bCanTakeDamage)
 	{
