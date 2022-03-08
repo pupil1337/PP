@@ -20,5 +20,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnHealth(float NewHealth);
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnWeapon(int CurrAmmo, int SpareAmmo);
+	void OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo);
 };

@@ -29,10 +29,10 @@ void UPPUIMgr::OnHealth(float NewHealth)
 	}
 }
 
-void UPPUIMgr::OnWeapon(int CurrAmmo, int SpareAmmo)
+void UPPUIMgr::OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo)
 {
 	if (IsValid(Panel))
 	{
-		Panel->OnWeapon(CurrAmmo, SpareAmmo);
+		Panel->OnWeapon(WeaponIndex, CurrAmmo, SpareAmmo);
 	}
 }

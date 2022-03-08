@@ -38,6 +38,9 @@ struct FWeaponCfg
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
+	int WeaponIdex;
+	
+	UPROPERTY(EditDefaultsOnly)
 	float Damage = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly)

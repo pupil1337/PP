@@ -23,7 +23,7 @@ public:
 	virtual void PPInitComponent() override;
 
 	void OnHealth(float NewHealth);
-	void OnWeapon(int CurrAmmo, int SpareAmmo);
+	void OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo);
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

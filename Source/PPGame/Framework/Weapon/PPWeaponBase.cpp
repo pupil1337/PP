@@ -234,7 +234,7 @@ void APPWeaponBase::OnWeaponEvent()
 		UPPUIMgr* tComp = Cast<UPPUIMgr>(OwnerPawn->GetComponentByClass(UPPUIMgr::StaticClass()));
 		if (IsValid(tComp))
 		{
-			tComp->OnWeapon(CurrClipSize, SpareClipSize);
+			tComp->OnWeapon(WeaponCfg.WeaponIdex, CurrClipSize, SpareClipSize);
 		}
 	}
 }
