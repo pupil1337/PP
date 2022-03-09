@@ -33,6 +33,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* ExplodParticleSystem;
 
+	UPROPERTY(EditDefaultsOnly)
+	float ExplodDamage = 30.0f;
+	UPROPERTY(EditDefaultsOnly)
+	float ExplodRadius = 200.0f;
+	
 	UPROPERTY()
 	UParticleSystemComponent* ExplodParticleComponent = nullptr;
 

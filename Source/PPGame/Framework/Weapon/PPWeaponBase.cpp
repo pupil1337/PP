@@ -246,7 +246,7 @@ void APPWeaponBase::Server_PlayEffect_Implementation()
 
 void APPWeaponBase::Multi_PlayEffect_Implementation()
 {
-	if (OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
+	if (IsValid(OwnerPawn) && OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
 	{
 		PlayEffect();
 	}
