@@ -31,7 +31,4 @@ private:
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS Player Controller")
 	APPCharacter* PossessedCharacter = nullptr;
-
-	UPROPERTY(ReplicatedUsing = OnRep_GetName,  BlueprintReadOnly)
-	FString PlayerName;
 };

@@ -10,7 +10,6 @@ void APPPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APPPlayerController, PlayerName);
 }
 
 void APPPlayerController::OnPossess(APawn* NewPawn)
