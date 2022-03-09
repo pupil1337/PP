@@ -6,7 +6,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "PPGame/Framework/PPCharacter.h"
-#include "PPGame/Framework/Component/PPAttributeComp.h"
 
 APPWeaponInstantBase::APPWeaponInstantBase()
 {
@@ -26,8 +25,6 @@ bool APPWeaponInstantBase::Fire(bool Op)
 		CalcTraceResult(tHit);
 		PlayTrailPS(tHit.FireLocation, tHit.FireRotation);
 		TakeDamageTo(tHit.HitActor);
-		float tTime = UGameplayStatics::GetTimeSeconds(this);
-		UE_LOG(LogTemp, Log, TEXT("%f"), tTime);
 	}
 	return true;
 }

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "PPGame/Framework/Library/PPCharacterEnumLibrary.h"
 #include "PPWeaponBase.generated.h"
 
@@ -95,7 +94,7 @@ protected:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	USkeletalMeshComponent* Mesh;
+	USkeletalMeshComponent* Mesh = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 	FWeaponCfg WeaponCfg;
@@ -104,19 +103,19 @@ protected:
 	TSubclassOf<UPPCrosshairWidget> CrosshairWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly)
-	UParticleSystem* MuzzlePS;
+	UParticleSystem* MuzzlePS = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category="PP|Sounds")
 	USoundCue* FireSoundCue;
 
 	UPROPERTY()
-	UParticleSystemComponent* PSComp;
+	UParticleSystemComponent* PSComp = nullptr;
 	
 	UPROPERTY()
 	UPPCrosshairWidget* Crosshair;
 
 	UPROPERTY()
-	APPCharacter* OwnerPawn;
+	APPCharacter* OwnerPawn = nullptr;
 
 	/** Transient **/
 	UPROPERTY()
