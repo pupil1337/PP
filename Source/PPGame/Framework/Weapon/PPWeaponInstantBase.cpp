@@ -58,7 +58,7 @@ void APPWeaponInstantBase::Server_PlayTrailPS_Implementation(FVector Start, FRot
 
 void APPWeaponInstantBase::Multicast_PlayTrailPS_Implementation(FVector Start, FRotator Rotation)
 {
-	if (OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
+	if (IsValid(OwnerPawn) && OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
 	{
 		PlayTrailPS(Start, Rotation);
 	}
