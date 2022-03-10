@@ -34,7 +34,7 @@ APPProjectileBase::APPProjectileBase()
 
 	InitialLifeSpan = 10.0f;
 	
-	SetReplicates(true);
+	bReplicates = true;
 	SetReplicatingMovement(true);
 }
 
