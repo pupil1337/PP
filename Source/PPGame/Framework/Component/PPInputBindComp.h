@@ -59,6 +59,9 @@ public:
 protected:
 	UFUNCTION()
 	void SwitchCameraMode();
+
+	UFUNCTION()
+	bool CheckOpenMirror(bool Up);
 	
 protected:
 	bool bInputBind;

@@ -6,6 +6,7 @@
 #include "PPWeaponMgr.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "Engine/InputDelegateBinding.h"
+#include "PPGame/Framework/PPPlayerController.h"
 
 UPPInputBindComp::UPPInputBindComp()
 {
@@ -154,11 +155,19 @@ void UPPInputBindComp::FireReleasedAction()
 
 void UPPInputBindComp::WeaponUp()
 {
+	if (CheckOpenMirror(true))
+	{
+		return;
+	}
 	OnChangeWeapon.Broadcast(true);
 }
 
 void UPPInputBindComp::WeaponDown()
 {
+	if (CheckOpenMirror(false))
+	{
+		return;
+	}
 	OnChangeWeapon.Broadcast(false);
 }
 
@@ -176,4 +185,23 @@ void UPPInputBindComp::SwitchCameraMode()
 			OwnerPawn->SetViewMode(EPPViewMode::FirstPerson);
 		}
 	}
+}
+
+bool UPPInputBindComp::CheckOpenMirror(bool Up)
+{
+	if (IsValid(OwnerPawn))
+	{
+		EPPRotationMode tRotationMode = OwnerPawn->GetRotationMode();
+		EPPOverlayState tOverlayState = OwnerPawn->GetOverlayState();
+		if (tRotationMode == EPPRotationMode::Aiming && tOverlayState == EPPOverlayState::Sniper)
+		{
+			APPPlayerController* tController = Cast<APPPlayerController>(OwnerPawn->GetController());
+			if (IsValid(tController))
+			{
+				tController->OnMouseWheel(Up);
+			}
+			return true;
+		}
+	}
+	return false;
 }

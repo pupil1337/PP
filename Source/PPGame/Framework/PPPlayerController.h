@@ -23,6 +23,9 @@ public:
 	virtual void OnRep_Pawn() override;
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void OnMouseWheel(bool Up);
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void OnRep_GetName();
 
 private:

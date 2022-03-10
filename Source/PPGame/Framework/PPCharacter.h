@@ -30,6 +30,10 @@ public:
 	EPPRotationMode GetRotationMode() const { return RotationMode; }
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
+	EPPOverlayState GetOverlayState() const { return OverlayState; }
+
+
+	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	EPPStance GetStance() const { return Stance; }
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
