@@ -32,7 +32,7 @@ protected:
 		FVector CurrentLocation, FVector TargetLocation, FRotator CameraRotation, FVector LagSpeeds, float DeltaTime);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Camera")
-	bool CustomCameraBehavior(float DeltaTime, FVector& Location, FRotator& Rotation, float& FOV);
+	bool CustomCameraBehavior(float DeltaTime, FVector& Location, FRotator& Rotation, float& FOV, bool bSniperMirror);
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ALS|Camera")

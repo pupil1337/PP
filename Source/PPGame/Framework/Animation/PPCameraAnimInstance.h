@@ -42,6 +42,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
 	EPPViewMode ViewMode;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Date|Character Information")
+	EPPOverlayState OverlayState;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Read Only Data|Character Information")
 	bool bDebugView = false;
 };

@@ -109,6 +109,11 @@ void APPCharacter::OnOverlayStateChanged(const EPPOverlayState PreOverlayState)
 	{
 		MainAnimInstance->GetAnimInfo().OverlayState = OverlayState;
 	}
+
+	if (CameraBehavior)
+	{
+		CameraBehavior->OverlayState = OverlayState;
+	}
 }
 
 void APPCharacter::SetCustomAction(const EPPCustomAction NewCustonAction, bool bForce)

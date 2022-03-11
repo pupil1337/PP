@@ -114,6 +114,8 @@ public:
 	/** Other **/
 	void UpdateCharacterMovement();
 	FORCEINLINE float GetCameraAimPitch() { return AimPitch; }
+	FORCEINLINE float GetCameraFirstFOV() { return FirstPersonFOV; }
+	FORCEINLINE float GetCameraThirdFOV() { return ThirdPersonFOV; }
 	UFUNCTION(Server, Unreliable)
 	void Server_SetAimPitch(float NewAimPitch);
 	

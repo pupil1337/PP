@@ -4,6 +4,7 @@
 
 #include "PPCharacter.h"
 #include "Animation/PPCameraAnimInstance.h"
+#include "Animation/PPPlayerAnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -73,9 +74,26 @@ void APPPlayerCameraManager::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 		FRotator OutRotation;
 		float OutFOV;
 
-		if (OutVT.Target->IsA<APPCharacterBase>())
+		if (OutVT.Target->IsA<APPCharacter>())
 		{
-			if (CustomCameraBehavior(DeltaTime, OutLocation, OutRotation, OutFOV))
+			bool bSniperMirror = false;
+			// ¾Ñ»÷Ç¹ÊÇ·ñ¿ª¾µ
+			APPCharacter* tPlayer = Cast<APPCharacter>(OutVT.Target);
+			if (IsValid(tPlayer))
+			{
+				UPPPlayerAnimInstance* tAnimInstance = Cast<UPPPlayerAnimInstance>(tPlayer->GetMesh()->GetAnimInstance());
+				if (IsValid(tAnimInstance))
+				{
+					const FPPAnimInfo& tAnimInfo = tAnimInstance->GetAnimInfo();
+					if (tAnimInfo.OverlayState == EPPOverlayState::Sniper && tAnimInfo.RotationMode == EPPRotationMode::Aiming)
+					{
+
+						bSniperMirror = true;
+					}
+				}
+			}
+
+			if (CustomCameraBehavior(DeltaTime, OutLocation, OutRotation, OutFOV, bSniperMirror))
 			{
 				OutVT.POV.Location = OutLocation;
 				OutVT.POV.Rotation = OutRotation;
@@ -110,7 +128,7 @@ FVector APPPlayerCameraManager::CalculateAxisIndependentLag(FVector CurrentLocat
 	return CameraRotation.RotateVector(ResultVector);
 }
 
-bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Location, FRotator& Rotation, float& FOV)
+bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Location, FRotator& Rotation, float& FOV, bool bSniperMirror)
 {
 	if (!ControlledCharacter)
 	{
@@ -204,9 +222,13 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	FTransform TargetCameraTransform(TargetCameraRotation, TargetCameraLocation, FVector::OneVector);
 	FTransform FPTargetCameraTransform(TargetCameraRotation, FPTarget, FVector::OneVector);
 
+	float FirstPerson = GetCameraBehaviorParam(NAME_Weight_FirstPerson);
+	if (bSniperMirror)
+	{
+		FirstPerson = 0.0f;
+	}
 	const FTransform& MixedTransform = UKismetMathLibrary::TLerp(TargetCameraTransform, FPTargetCameraTransform,
-	                                                             GetCameraBehaviorParam(
-		                                                             NAME_Weight_FirstPerson));
+	                                                             FirstPerson);
 
 	const FTransform& TargetTransform = UKismetMathLibrary::TLerp(MixedTransform,
 	                                                              FTransform(DebugViewRotation, TargetCameraLocation,
@@ -216,7 +238,7 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 
 	Location = TargetTransform.GetLocation();
 	Rotation = TargetTransform.Rotator();
-	FOV = FMath::Lerp(TPFOV, FPFOV, GetCameraBehaviorParam(NAME_Weight_FirstPerson));
+	FOV = FMath::Lerp(TPFOV, FPFOV, FirstPerson);
 
 	return true;
 }
