@@ -216,6 +216,11 @@ void APPCharacter::OnRotationModeChanged(const EPPRotationMode PreRotationMode)
 	{
 		CameraBehavior->SetRotationMode(RotationMode);
 	}
+
+	if (RotationMode == EPPRotationMode::Aiming)
+	{
+		bUseControllerRotationYaw = true;
+	}
 }
 
 void APPCharacter::SetGait(const EPPGait NewGait, bool bForce)

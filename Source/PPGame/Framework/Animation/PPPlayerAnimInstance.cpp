@@ -37,6 +37,7 @@ void UPPPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		
 		UpdateMoveDir();
 		PPAnimInfo.AimPitch = OwnerPawn->GetCameraAimPitch();
+		PPAnimInfo.bUseControllerRotationYaw = OwnerPawn->bUseControllerRotationYaw;
 	}
 }
 

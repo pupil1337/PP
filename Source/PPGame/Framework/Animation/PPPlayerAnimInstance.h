@@ -37,6 +37,8 @@ struct FPPAnimInfo
 	float MoveDir;
 	UPROPERTY(BlueprintReadOnly)
 	float AimPitch;
+	UPROPERTY(BlueprintReadOnly)
+	bool bUseControllerRotationYaw;
 };
 
 class APPCharacter;

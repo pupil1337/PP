@@ -71,17 +71,45 @@ void UPPInputBindComp::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void UPPInputBindComp::MoveForward(float Value)
 {
-	if (IsValid(OwnerPawn))
+	if (Value && IsValid(OwnerPawn))
 	{
-		OwnerPawn->AddMovementInput(OwnerPawn->GetActorForwardVector(), Value);
+		if (OwnerPawn->bUseControllerRotationYaw)
+		{
+			OwnerPawn->AddMovementInput(OwnerPawn->GetActorForwardVector(), Value);
+		}
+		else
+		{
+			// find out which way is forward
+			const FRotator Rotation = OwnerPawn->GetController()->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get forward vector
+			FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			OwnerPawn->AddMovementInput(Direction, Value);
+			OwnerPawn->SetActorRotation(Direction.Rotation());
+		}
 	}
 }
 
 void UPPInputBindComp::MoveRight(float Value)
 {
-	if (IsValid(OwnerPawn))
+	if (Value && IsValid(OwnerPawn))
 	{
-		OwnerPawn->AddMovementInput(OwnerPawn->GetActorRightVector(), Value);
+		if (OwnerPawn->bUseControllerRotationYaw)
+		{
+			OwnerPawn->AddMovementInput(OwnerPawn->GetActorRightVector(), Value);
+		}
+		else
+		{
+			// find out which way is right
+			const FRotator Rotation = OwnerPawn->GetController()->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			// get right vector 
+			FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// add movement in that direction
+			OwnerPawn->AddMovementInput(Direction, Value);
+			OwnerPawn->SetActorRotation(Direction.Rotation());
+		}
 	}
 }
 
