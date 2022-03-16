@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "GameFramework/PlayerState.h"
 
 
 APPMonsterBase::APPMonsterBase()
@@ -18,20 +19,20 @@ APPMonsterBase::APPMonsterBase()
 	
 }
 
-void APPMonsterBase::MonsterTakeDamage(float InDamage, AActor* instigator)
+void APPMonsterBase::MonsterTakeDamage(float InDamage, AActor* tInstigator)
 {
 	if (InDamage > 0.0f && bCanTakeDamage)
 	{
-		if (IsValid(instigator))
+		if (IsValid(tInstigator))
 		{
-			APPCharacter* tPlayer = Cast<APPCharacter>(instigator);
+			APPCharacter* tPlayer = Cast<APPCharacter>(tInstigator);
 			if (IsValid(tPlayer))
 			{
 				Health -= InDamage;
 				if (Health <= 0.0f)
 				{
 					Health = 0.0f;
-					Dead();
+					Dead(tInstigator);
 					return;
 				}
 
@@ -67,7 +68,7 @@ void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)
 	}
 }
 
-void APPMonsterBase::Dead()
+void APPMonsterBase::Dead(AActor* tInstigator)
 {
 	bCanTakeDamage = false;
 
@@ -86,6 +87,21 @@ void APPMonsterBase::Dead()
 	GetCharacterMovement()->DisableMovement();
 	Multi_PlayAnimMontage(DeadMontage);
 	DetachFromControllerPendingDestroy();
+
+	// 增加积分
+	APPCharacter* tPlayer = Cast<APPCharacter>(tInstigator);
+	if (IsValid(tPlayer))
+	{
+		AController* tController = tPlayer->GetController();
+		if (IsValid(tController))
+		{
+			APlayerState* tPlayerState = tController->GetPlayerState<APlayerState>();
+			if (IsValid(tPlayerState))
+			{
+				tPlayerState->SetScore(tPlayerState->GetScore() + 1);
+			}
+		}
+	}
 }
 
 void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)

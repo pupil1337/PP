@@ -30,7 +30,7 @@ class PPGAME_API APPMonsterBase : public ACharacter
 public:
 	APPMonsterBase();
 
-	virtual void MonsterTakeDamage(float InDamage, AActor* instigator);
+	virtual void MonsterTakeDamage(float InDamage, AActor* tInstigator);
 	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_PlayAnimMontage(UAnimMontage* Montage);
@@ -57,7 +57,7 @@ protected:
 	void SetEnemy(APPCharacter* InEnemy);
 	
 	UFUNCTION()
-	void Dead();
+	void Dead(AActor* tInstigator);
 	
 private:
 	UPROPERTY()
