@@ -116,3 +116,14 @@ void APPMonsterBase::Multi_CollisionDisable_Implementation()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+
+UBlackboardComponent* APPMonsterBase::GetBlackboardComp()
+{
+	AAIController* tAIController = Cast<AAIController>(GetController());
+	if (IsValid(tAIController))
+	{
+		return tAIController->GetBlackboardComponent();
+	}
+
+	return nullptr;
+}

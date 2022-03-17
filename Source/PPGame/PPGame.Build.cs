@@ -16,6 +16,7 @@ public class PPGame : ModuleRules
 			
 			"UMG",
 			"AIModule",
+			"NavigationSystem",
 			"GameplayTasks"
 		});
 

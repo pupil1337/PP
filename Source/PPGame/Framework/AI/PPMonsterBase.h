@@ -8,6 +8,7 @@
 
 class APPCharacter;
 class UAnimMontage;
+class UBlackboardComponent;
 
 USTRUCT()
 struct FMonsterSkill
@@ -31,6 +32,7 @@ public:
 	APPMonsterBase();
 
 	virtual void MonsterTakeDamage(float InDamage, AActor* tInstigator);
+	UBlackboardComponent* GetBlackboardComp();
 	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_PlayAnimMontage(UAnimMontage* Montage);
