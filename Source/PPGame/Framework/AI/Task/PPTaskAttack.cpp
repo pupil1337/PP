@@ -18,7 +18,7 @@ EBTNodeResult::Type UPPTaskAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	APPMonsterBase* tMonster = Cast<APPMonsterBase>(OwnerComp.GetAIOwner()->GetPawn());
 	if (IsValid(tMonster))
 	{
-		TArray<FMonsterSkill> tSkills = tMonster->GetMonsterSkills();
+		const TArray<FMonsterSkill>& tSkills = tMonster->GetMonsterSkills();
 		if (tSkills.Num() > 0)
 		{
 			FMonsterSkill tSkill = tSkills[UKismetMathLibrary::RandomInteger(tSkills.Num())];

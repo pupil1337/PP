@@ -14,6 +14,7 @@ void APPCharacterBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 	CreateAllComps(false);
+	ENetMode NetMode1 = GetNetMode();
 }
 
 void APPCharacterBase::PostNetInit()
@@ -21,6 +22,7 @@ void APPCharacterBase::PostNetInit()
 	CreateAllComps(true);
 	
 	Super::PostNetInit();
+	ENetMode NetMode1 = GetNetMode();
 }
 
 void APPCharacterBase::BeginPlay()
@@ -33,7 +35,7 @@ void APPCharacterBase::BeginPlay()
 	{
 		ChangeControllerRole();
 	}
-	
+	ENetMode NetMode1 = GetNetMode();
 }
 
 void APPCharacterBase::Destroyed()

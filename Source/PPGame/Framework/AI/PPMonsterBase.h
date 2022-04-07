@@ -20,6 +20,9 @@ struct FMonsterSkill
 
 	UPROPERTY(EditDefaultsOnly)
 	UAnimMontage* Montage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	int Weight = 1;
 	
 };
 
