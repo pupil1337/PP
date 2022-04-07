@@ -33,6 +33,7 @@ EBTNodeResult::Type UPPBossSelectAttack::ExecuteTask(UBehaviorTreeComponent& Own
 				if (IsValid(tBBComp))
 				{
 					tBBComp->SetValue<UBlackboardKeyType_Int>(TEXT("SkillIndex"), Index);
+					return EBTNodeResult::Succeeded;
 				}
 			}		
 		}

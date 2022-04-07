@@ -21,7 +21,7 @@ EBTNodeResult::Type UPPTaskAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		const TArray<FMonsterSkill>& tSkills = tMonster->GetMonsterSkills();
 		if (tSkills.Num() > 0)
 		{
-			FMonsterSkill tSkill = tSkills[UKismetMathLibrary::RandomInteger(tSkills.Num())];
+			const FMonsterSkill& tSkill = tSkills[UKismetMathLibrary::RandomInteger(tSkills.Num())];
 			if (IsValid(tSkill.Montage))
 			{
 				USkeletalMeshComponent* tMesh = tMonster->GetMesh();
