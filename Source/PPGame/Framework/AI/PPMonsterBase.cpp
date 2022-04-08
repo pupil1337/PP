@@ -57,6 +57,8 @@ void APPMonsterBase::BeginPlay()
 
 void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)
 {
+	Enemy = InEnemy;
+
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (IsValid(AIController))
 	{

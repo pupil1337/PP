@@ -6,6 +6,8 @@
 #include "PPMonsterBase.h"
 #include "PPBossBase.generated.h"
 
+class APPCharacter;
+
 /**
  * 
  */
@@ -13,5 +15,12 @@ UCLASS()
 class PPGAME_API APPBossBase : public APPMonsterBase
 {
 	GENERATED_BODY()
+
+public:
+	APPBossBase();
 	
+	virtual void Tick(float DeltaSeconds);
+
+protected:
+	virtual void SetEnemy(APPCharacter* InEnemy) override;
 };
