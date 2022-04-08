@@ -14,7 +14,7 @@ void APPBossBase::Tick(float DeltaSeconds)
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		APPCharacter* tPlayer = GetEnemy();
-		if (IsValid(tPlayer))
+		if (IsValid(tPlayer) && MonsterIsAlive())
 		{
 			static float tTimer = 0.0f;
 			tTimer += DeltaSeconds;

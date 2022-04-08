@@ -44,7 +44,6 @@ public:
 	void Multi_CollisionDisable();
 
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
-	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -59,8 +58,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UAnimMontage* DeadMontage;
 
+	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }
+
 	virtual void SetEnemy(APPCharacter* InEnemy);
 	void Dead(AActor* tInstigator);
+	bool MonsterIsAlive();
 	
 private:
 	UPROPERTY()

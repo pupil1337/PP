@@ -106,6 +106,11 @@ void APPMonsterBase::Dead(AActor* tInstigator)
 	}
 }
 
+bool APPMonsterBase::MonsterIsAlive()
+{
+	return Health > 0.0f;
+}
+
 void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 {
 	if (IsValid(Montage))
