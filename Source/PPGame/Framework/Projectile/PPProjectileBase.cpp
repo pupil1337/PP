@@ -62,43 +62,6 @@ void APPProjectileBase::OnProjectileStop(const FHitResult& ImpactResult)
 			ExplodParticleComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodParticleSystem, GetActorLocation());
 		}
 	}
-	
-	if (GetLocalRole() == ROLE_Authority)
-	{
-		// 打到怪
-		TArray<AActor*> tFoundMonsterArray;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APPMonsterBase::StaticClass(), tFoundMonsterArray);
-		for (auto& it: tFoundMonsterArray)
-		{
-			APPMonsterBase* tMonster = Cast<APPMonsterBase>(it);
-			if (IsValid(tMonster))
-			{
-				if (FVector::Distance(tMonster->GetActorLocation(), GetActorLocation()) < ExplodRadius)
-				{
-					tMonster->MonsterTakeDamage(ExplodDamage, GetOwner());
-				}
-			}
-		}
-
-		// 打到玩家
-		TArray<AActor*> tFoundPlayerArray;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APPCharacter::StaticClass(), tFoundPlayerArray);
-		for (auto& it: tFoundPlayerArray)
-		{
-			APPCharacter* tPlayer = Cast<APPCharacter>(it);
-			if (IsValid(tPlayer))
-			{
-				if (FVector::Distance(tPlayer->GetActorLocation(), GetActorLocation()) < ExplodRadius)
-				{
-					UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
-					if (IsValid(tComp))
-					{
-						tComp->TakeDamage(GetOwner(), 10.0f);
-					}
-				}
-			}
-		}
-	}
 
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetLifeSpan(1.0f);

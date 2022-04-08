@@ -22,5 +22,5 @@ void APPWeaponLauncherBase::Server_SpawnProjectile_Implementation(FVector Locati
 	FActorSpawnParameters tParams;
 	tParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	tParams.Owner = OwnerPawn;
-	APPProjectileBase* tProjectile = GetWorld()->SpawnActor<APPProjectileBase>(BulletClass.Get(), Location, Rotation, tParams);
+	GetWorld()->SpawnActor<APPProjectileBase>(BulletClass.Get(), Location, Rotation, tParams);
 }
