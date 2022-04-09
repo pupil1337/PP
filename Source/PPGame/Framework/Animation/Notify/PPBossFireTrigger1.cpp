@@ -17,21 +17,25 @@ void UPPBossFireTrigger1::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 		{
 			if (tBoss->GetLocalRole() == ROLE_Authority)
 			{
-				if (!MuzzleName.IsNone())
+				if (!MuzzleName.IsNone() && IsValid(ProjectileClass))
 				{
-					APPCharacter* tPlayer = tBoss->GetEnemy();
-					if (IsValid(tPlayer))
+					UClass* tClass = ProjectileClass.Get();
+					if (IsValid(tClass))
 					{
-						FVector tStartV = MeshComp->GetSocketLocation(MuzzleName);
-						FVector tEndV = tPlayer->GetActorLocation();
-						FVector tV = tEndV - tStartV;
-						FRotator tR = tV.Rotation();
-						tR.Normalize();
-						
-						FActorSpawnParameters tParams;
-						tParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-						tParams.Owner = tBoss;
-						GetWorld()->SpawnActor<APPProjectileBase>(ProjectileClass.Get(), tStartV, tR, tParams);
+						APPCharacter* tPlayer = tBoss->GetEnemy();
+						if (IsValid(tPlayer))
+						{
+							FVector tStartV = MeshComp->GetSocketLocation(MuzzleName);
+							FVector tEndV = tPlayer->GetActorLocation();
+							FVector tV = tEndV - tStartV;
+							FRotator tR = tV.Rotation();
+							tR.Normalize();
+
+							FActorSpawnParameters tParams;
+							tParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+							tParams.Owner = tBoss;
+							tBoss->GetWorld()->SpawnActor<APPProjectileBase>(tClass, tStartV, tR, tParams);
+						}
 					}
 				}
 			}
