@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "PPBossFireTrigger1.generated.h"
+#include "PPBossFireTrigger2.generated.h"
 
 class APPProjectileBase;
 
@@ -12,7 +12,7 @@ class APPProjectileBase;
  * 
  */
 UCLASS()
-class PPGAME_API UPPBossFireTrigger1 : public UAnimNotify
+class PPGAME_API UPPBossFireTrigger2 : public UAnimNotify
 {
 	GENERATED_BODY()
 	
