@@ -9,6 +9,7 @@
 class APPCharacter;
 class UAnimMontage;
 class UBlackboardComponent;
+class UParticleSystem;
 
 USTRUCT()
 struct FMonsterSkill
@@ -42,6 +43,12 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_CollisionDisable();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_PlayParticleSystem(UParticleSystem* ParticleSystem, FVector Location);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_PlayDecal(UMaterialInterface* DecalMat, FVector Size, FVector Location, float Life);
 
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
 	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }

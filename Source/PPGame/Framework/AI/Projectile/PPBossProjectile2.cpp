@@ -25,13 +25,27 @@ void APPBossProjectile2::Destroyed()
 				APPCharacter* tPlayer = Cast<APPCharacter>(tFoundPlayerArray[UKismetMathLibrary::RandomInteger(tFoundPlayerArray.Num())]);
 				if (IsValid(tPlayer))
 				{
-					FVector tV = tPlayer->GetActorLocation() + FVector::UpVector * 2000.0f;
+					FVector tPlayerV = tPlayer->GetActorLocation();
+					FVector tV = tPlayerV + FVector::UpVector * 2000.0f;
 					tV += FVector::UpVector * 1000.0f * UKismetMathLibrary::RandomFloat();
 
 					FActorSpawnParameters tParams;
 					tParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 					tParams.Owner = tBoss;
 					GetWorld()->SpawnActor<APPProjectileBase>(tClass, tV + FVector::UpVector * 10000.0f, { -90.0f, 0.0f, 0.0f }, tParams);
+
+					if (IsValid(DecalMat))
+					{
+						FHitResult tHit;
+						FCollisionQueryParams tCollisionParams;
+						tCollisionParams.AddIgnoredActor(tPlayer);
+						FVector EndLoc = tPlayerV + FVector::DownVector * 1000.0f;
+						bool bHit = GetWorld()->LineTraceSingleByChannel(tHit, tPlayerV, EndLoc, ECollisionChannel::ECC_WorldStatic, tCollisionParams);
+						if (bHit)
+						{
+							tBoss->Multi_PlayDecal(DecalMat, { 128.0f, 256.0f, 256.0f }, tPlayerV, 3.0f);
+						}
+					}
 				}
 			}
 		}

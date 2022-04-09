@@ -11,6 +11,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "GameFramework/PlayerState.h"
+#include "Particles/ParticleSystem.h"
+#include "Kismet/GameplayStatics.h"
 
 
 APPMonsterBase::APPMonsterBase()
@@ -122,6 +124,22 @@ void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 void APPMonsterBase::Multi_CollisionDisable_Implementation()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void APPMonsterBase::Multi_PlayParticleSystem_Implementation(UParticleSystem* ParticleSystem, FVector Location)
+{
+	if (!IsNetMode(NM_DedicatedServer) && IsValid(ParticleSystem))
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, Location);
+	}
+}
+
+void APPMonsterBase::Multi_PlayDecal_Implementation(UMaterialInterface* DecalMat, FVector Size, FVector Location, float Life)
+{
+	if (!IsNetMode(NM_DedicatedServer) && IsValid(DecalMat))
+	{
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMat, Size, Location, { -90.0f, 0.0f, 0.0f }, Life);
+	}
 }
 
 UBlackboardComponent* APPMonsterBase::GetBlackboardComp()
