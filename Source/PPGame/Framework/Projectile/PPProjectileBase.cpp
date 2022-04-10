@@ -68,6 +68,7 @@ void APPProjectileBase::OnProjectileStop(const FHitResult& ImpactResult)
 		// 打到怪
 		TArray<AActor*> tFoundMonsterArray;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APPMonsterBase::StaticClass(), tFoundMonsterArray);
+		ExplodMonsterArray.Empty();
 		for (auto& it : tFoundMonsterArray)
 		{
 			APPMonsterBase* tMonster = Cast<APPMonsterBase>(it);
@@ -76,6 +77,7 @@ void APPProjectileBase::OnProjectileStop(const FHitResult& ImpactResult)
 				if (FVector::Distance(tMonster->GetActorLocation(), GetActorLocation()) < ExplodRadius)
 				{
 					tMonster->MonsterTakeDamage(ExplodDamage, GetOwner());
+					ExplodMonsterArray.Add(it);
 				}
 			}
 		}
@@ -83,6 +85,7 @@ void APPProjectileBase::OnProjectileStop(const FHitResult& ImpactResult)
 		// 打到玩家
 		TArray<AActor*> tFoundPlayerArray;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APPCharacter::StaticClass(), tFoundPlayerArray);
+		ExplodPlayerArray.Empty();
 		for (auto& it : tFoundPlayerArray)
 		{
 			APPCharacter* tPlayer = Cast<APPCharacter>(it);
@@ -94,6 +97,7 @@ void APPProjectileBase::OnProjectileStop(const FHitResult& ImpactResult)
 					if (IsValid(tComp))
 					{
 						tComp->TakeDamage(GetOwner(), 10.0f);
+						ExplodPlayerArray.Add(it);
 					}
 				}
 			}

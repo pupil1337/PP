@@ -11,5 +11,19 @@ void APPPlayerProjectile1::OnProjectileStop(const FHitResult& ImpactResult)
 {
 	Super::OnProjectileStop(ImpactResult);
 
-	
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		// ´òµ½¹ÖÎï
+		if (ExplodMonsterArray.Num() > 0)
+		{
+			for (auto& it : ExplodMonsterArray)
+			{
+				APPMonsterBase* tMonster = Cast<APPMonsterBase>(it);
+				if (IsValid(tMonster))
+				{
+					tMonster->Multi_SetDamageDeBuff(DamageType);
+				}
+			}
+		}
+	}
 }

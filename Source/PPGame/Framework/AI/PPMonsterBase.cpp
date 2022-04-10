@@ -13,6 +13,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 
 APPMonsterBase::APPMonsterBase()
@@ -139,6 +140,34 @@ void APPMonsterBase::Multi_PlayDecal_Implementation(UMaterialInterface* DecalMat
 	if (!IsNetMode(NM_DedicatedServer) && IsValid(DecalMat))
 	{
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMat, Size, Location, { -90.0f, 0.0f, 0.0f }, Life);
+	}
+}
+
+void APPMonsterBase::Multi_SetDamageDeBuff_Implementation(EPPDamageType DamageType)
+{
+	if (!IsNetMode(NM_DedicatedServer))
+	{
+		if (DeBuffEffects.Contains(DamageType) && IsValid(DeBuffEffects[DamageType]))
+		{
+			UParticleSystemComponent* tNewPs = UGameplayStatics::SpawnEmitterAttached(DeBuffEffects[DamageType], GetMesh(), DeBuffSocket);
+			if (DeBuffPSMap.Contains(DamageType))
+			{
+				UParticleSystemComponent* tOldPS = DeBuffPSMap[DamageType];
+				if (IsValid(tOldPS))
+				{
+					if (tOldPS->IsActive())
+					{
+						tOldPS->Deactivate();
+					}
+					tOldPS->DestroyComponent();
+				}
+				DeBuffPSMap[DamageType] = tNewPs;
+			}
+			else
+			{
+				DeBuffPSMap.Add(DamageType, tNewPs);
+			}
+		}
 	}
 }
 

@@ -16,4 +16,5 @@ class PPGAME_API APPPlayerProjectile1 : public APPProjectileBase
 	
 protected:
 	virtual void OnProjectileStop(const FHitResult& ImpactResult) override;
+
 };

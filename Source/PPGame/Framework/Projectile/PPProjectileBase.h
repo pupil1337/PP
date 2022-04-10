@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PPGame/Framework/Library/PPCommonEnumLibrary.h"
 #include "PPProjectileBase.generated.h"
 
 class UCapsuleComponent;
@@ -34,6 +35,9 @@ protected:
 	UParticleSystem* ExplodParticleSystem;
 
 	UPROPERTY(EditDefaultsOnly)
+	EPPDamageType DamageType = EPPDamageType::Normal;
+
+	UPROPERTY(EditDefaultsOnly)
 	float ExplodDamage = 30.0f;
 	UPROPERTY(EditDefaultsOnly)
 	float ExplodRadius = 200.0f;
@@ -43,5 +47,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
+
+	UPROPERTY()
+	TArray<AActor*> ExplodMonsterArray;
+	UPROPERTY()
+	TArray<AActor*> ExplodPlayerArray;
 
 };

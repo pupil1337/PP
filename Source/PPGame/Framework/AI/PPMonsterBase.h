@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "PPGame/Framework/Library/PPCommonEnumLibrary.h"
 #include "PPMonsterBase.generated.h"
 
 class APPCharacter;
@@ -50,6 +51,9 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_PlayDecal(UMaterialInterface* DecalMat, FVector Size, FVector Location, float Life);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_SetDamageDeBuff(EPPDamageType DamageType);
+
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
 	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }
 
@@ -65,6 +69,10 @@ protected:
 	TArray<FMonsterSkill> MonsterSkills;
 	UPROPERTY(EditDefaultsOnly)
 	UAnimMontage* DeadMontage;
+	UPROPERTY(EditDefaultsOnly)
+	TMap<EPPDamageType, UParticleSystem*> DeBuffEffects;
+	UPROPERTY(EditDefaultsOnly)
+	FName DeBuffSocket;
 
 	virtual void SetEnemy(APPCharacter* InEnemy);
 	void Dead(AActor* tInstigator);
@@ -75,5 +83,8 @@ private:
 	APPCharacter* Enemy = nullptr;
 
 	bool bCanTakeDamage = true;
+
+	UPROPERTY()
+	TMap<EPPDamageType, UParticleSystemComponent*> DeBuffPSMap;
 	
 };
