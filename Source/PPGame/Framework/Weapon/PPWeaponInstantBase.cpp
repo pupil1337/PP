@@ -26,8 +26,8 @@ bool APPWeaponInstantBase::Fire(bool Op)
 	{
 		FTraceResult tHit;
 		CalcTraceResult(tHit);
-		PlayTrailPS(tHit.FireLocation, tHit.FireRotation);
-		TakeDamageTo(tHit.HitActor);
+		PlayPS(TrailPS, tHit.FireLocation, tHit.FireRotation);
+		TakeDamageTo(tHit.HitActor, tHit.HitLocation);
 	}
 	return true;
 }
@@ -37,18 +37,19 @@ void APPWeaponInstantBase::Aim(bool Op)
 	Super::Aim(Op);
 }
 
-void APPWeaponInstantBase::TakeDamageTo(AActor* Victim)
+void APPWeaponInstantBase::TakeDamageTo(AActor* Victim, FVector Location)
 {
 	if (IsValid(Victim))
 	{
+		APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
+		APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
 		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
 		{
-			Server_TakeDamageTo(Victim);
+			Server_TakeDamageTo(Victim, Location);
 		}
 		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
 		{
 			// 1、打到玩家
-			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
 			if (IsValid(tPlayer))
 			{
 				UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
@@ -59,47 +60,61 @@ void APPWeaponInstantBase::TakeDamageTo(AActor* Victim)
 			}
 
 			// 2、打到怪物
-			APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
 			if (IsValid(tMonster))
 			{
 				tMonster->MonsterTakeDamage(WeaponCfg.Damage, OwnerPawn);
+			}
+		}
+
+		if (OwnerPawn->IsLocallyControlled())
+		{
+			// 1、打到玩家
+			if (IsValid(tPlayer))
+			{
+				PlayPS(HitPlayerPS, Location, FRotator::ZeroRotator);
+			}
+
+			// 2、打到怪物
+			if (IsValid(tMonster))
+			{
+				PlayPS(HitMonsterPS, Location, FRotator::ZeroRotator);
 			}
 		}
 	}
 }
 
 
-void APPWeaponInstantBase::Server_TakeDamageTo_Implementation(AActor* Victim)
+void APPWeaponInstantBase::Server_TakeDamageTo_Implementation(AActor* Victim, FVector Location)
 {
-	TakeDamageTo(Victim);
+	TakeDamageTo(Victim, Location);
 }
 
-void APPWeaponInstantBase::PlayTrailPS(FVector Start, FRotator Rotation)
+void APPWeaponInstantBase::PlayPS(UParticleSystem* PS, FVector Location, FRotator Rotation)
 {
-	if (IsValid(TrailPS))
+	if (IsValid(PS))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TrailPS, Start, Rotation);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PS, Location, Rotation);
 
 		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
 		{
-			Server_PlayTrailPS(Start, Rotation);
+			Server_PlayPS(PS, Location, Rotation);
 		}
 		else if (GetNetMode() == NM_ListenServer)
 		{
-			Multicast_PlayTrailPS(Start, Rotation);
+			Multicast_PlayPS(PS, Location, Rotation);
 		}
 	}
 }
 
-void APPWeaponInstantBase::Server_PlayTrailPS_Implementation(FVector Start, FRotator Rotation)
+void APPWeaponInstantBase::Server_PlayPS_Implementation(UParticleSystem* PS, FVector Location, FRotator Rotation)
 {
-	Multicast_PlayTrailPS(Start, Rotation);
+	Multicast_PlayPS(PS, Location, Rotation);
 }
 
-void APPWeaponInstantBase::Multicast_PlayTrailPS_Implementation(FVector Start, FRotator Rotation)
+void APPWeaponInstantBase::Multicast_PlayPS_Implementation(UParticleSystem* PS, FVector Location, FRotator Rotation)
 {
 	if (IsValid(OwnerPawn) && OwnerPawn->GetLocalRole() == ROLE_SimulatedProxy)
 	{
-		PlayTrailPS(Start, Rotation);
+		PlayPS(PS, Location, Rotation);
 	}
 }

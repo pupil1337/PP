@@ -36,16 +36,19 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	UParticleSystem* TrailPS;
+	UParticleSystem* TrailPS = nullptr;
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* HitPlayerPS = nullptr;
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* HitMonsterPS = nullptr;
 
-	void TakeDamageTo(AActor* Victim);
+	void TakeDamageTo(AActor* Victim, FVector Location);
 	UFUNCTION(Server, Reliable)
-	void Server_TakeDamageTo(AActor* Victim);
+	void Server_TakeDamageTo(AActor* Victim, FVector Location);
 
-	UFUNCTION()
-	void PlayTrailPS(FVector Start, FRotator Rotation);
+	void PlayPS(UParticleSystem* PS, FVector Location, FRotator Rotation);
 	UFUNCTION(Server, Unreliable)
-	void Server_PlayTrailPS(FVector Start, FRotator Rotation);
+	void Server_PlayPS(UParticleSystem* PS, FVector Start, FRotator Rotation);
 	UFUNCTION(NetMulticast, Unreliable)
-	void Multicast_PlayTrailPS(FVector Start, FRotator Rotation);
+	void Multicast_PlayPS(UParticleSystem* PS, FVector Start, FRotator Rotation);
 };
