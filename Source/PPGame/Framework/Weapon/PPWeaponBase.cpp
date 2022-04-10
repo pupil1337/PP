@@ -7,8 +7,6 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PPGame/Framework/PPCharacter.h"
-#include "PPGame/Framework/AI/PPMonsterBase.h"
-#include "PPGame/Framework/Component/PPAttributeComp.h"
 #include "PPGame/Framework/Component/PPUIMgr.h"
 #include "PPGame/Framework/Component/PPWeaponMgr.h"
 #include "PPGame/Framework/UI/PPCrosshairWidget.h"
@@ -174,37 +172,6 @@ void APPWeaponBase::CalcTraceResult(FTraceResult& Result)
 	Result.FireRotation = tNotHitForward.Rotation(); Result.FireRotation.Normalize();
 }
 
-void APPWeaponBase::TakeDamageTo(AActor* Victim)
-{
-	if (IsValid(Victim))
-	{
-		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
-		{
-			Server_TakeDamageTo(Victim);
-		}
-		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
-		{
-			// 1、打到玩家
-			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
-			if (IsValid(tPlayer))
-			{
-				UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
-				if (IsValid(tComp))
-				{
-					tComp->TakeDamage(OwnerPawn, WeaponCfg.Damage);	
-				}
-			}
-
-			// 2、打到怪物
-			APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
-			if (IsValid(tMonster))
-			{
-				tMonster->MonsterTakeDamage(WeaponCfg.Damage, OwnerPawn);
-			}
-		}
-	}
-}
-
 void APPWeaponBase::PlayEffect()
 {
 	if (IsValid(MuzzlePS))
@@ -250,9 +217,4 @@ void APPWeaponBase::Multi_PlayEffect_Implementation()
 	{
 		PlayEffect();
 	}
-}
-
-void APPWeaponBase::Server_TakeDamageTo_Implementation(AActor* Victim)
-{
-	TakeDamageTo(Victim);
 }

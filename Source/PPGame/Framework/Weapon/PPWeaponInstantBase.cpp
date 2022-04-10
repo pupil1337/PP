@@ -6,6 +6,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/AI/PPMonsterBase.h"
+#include "PPGame/Framework/Component/PPAttributeComp.h"
+
 
 APPWeaponInstantBase::APPWeaponInstantBase()
 {
@@ -32,6 +35,43 @@ bool APPWeaponInstantBase::Fire(bool Op)
 void APPWeaponInstantBase::Aim(bool Op)
 {
 	Super::Aim(Op);
+}
+
+void APPWeaponInstantBase::TakeDamageTo(AActor* Victim)
+{
+	if (IsValid(Victim))
+	{
+		if (OwnerPawn->GetLocalRole() == ROLE_AutonomousProxy)
+		{
+			Server_TakeDamageTo(Victim);
+		}
+		else if (OwnerPawn->GetLocalRole() == ROLE_Authority)
+		{
+			// 1、打到玩家
+			APPCharacter* tPlayer = Cast<APPCharacter>(Victim);
+			if (IsValid(tPlayer))
+			{
+				UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
+				if (IsValid(tComp))
+				{
+					tComp->TakeDamage(OwnerPawn, WeaponCfg.Damage);
+				}
+			}
+
+			// 2、打到怪物
+			APPMonsterBase* tMonster = Cast<APPMonsterBase>(Victim);
+			if (IsValid(tMonster))
+			{
+				tMonster->MonsterTakeDamage(WeaponCfg.Damage, OwnerPawn);
+			}
+		}
+	}
+}
+
+
+void APPWeaponInstantBase::Server_TakeDamageTo_Implementation(AActor* Victim)
+{
+	TakeDamageTo(Victim);
 }
 
 void APPWeaponInstantBase::PlayTrailPS(FVector Start, FRotator Rotation)

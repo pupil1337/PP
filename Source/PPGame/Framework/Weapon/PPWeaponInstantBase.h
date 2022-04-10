@@ -38,6 +38,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* TrailPS;
 
+	void TakeDamageTo(AActor* Victim);
+	UFUNCTION(Server, Reliable)
+	void Server_TakeDamageTo(AActor* Victim);
+
 	UFUNCTION()
 	void PlayTrailPS(FVector Start, FRotator Rotation);
 	UFUNCTION(Server, Unreliable)
