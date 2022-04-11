@@ -21,7 +21,7 @@ void APPPlayerProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 				APPMonsterBase* tMonster = Cast<APPMonsterBase>(it);
 				if (IsValid(tMonster))
 				{
-					tMonster->SetDamageDeBuff(DamageType, GetOwner());
+					tMonster->SetDamageDeBuff(DamageType, GetOwner(), GetActorLocation());
 				}
 			}
 		}

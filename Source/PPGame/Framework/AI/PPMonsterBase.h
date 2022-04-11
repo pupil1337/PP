@@ -52,7 +52,7 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_PlayDecal(UMaterialInterface* DecalMat, FVector Size, FVector Location, float Life);
 
-	void SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator);
+	void SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator, FVector ExplodLocation);
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_SetDamageDeBuff(EPPDamageType DamageType);
 

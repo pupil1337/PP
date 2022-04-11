@@ -159,17 +159,17 @@ void APPMonsterBase::Multi_PlayDecal_Implementation(UMaterialInterface* DecalMat
 	}
 }
 
-void APPMonsterBase::SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator)
+void APPMonsterBase::SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator, FVector ExplodLocation)
 {
 	Multi_SetDamageDeBuff(DamageType);
 
 	switch (DamageType)
 	{
 	case EPPDamageType::Normal:
-		{
-			
-			break;
-		}
+	{
+
+		break;
+	}
 	case EPPDamageType::Electric:
 	{
 		SetMoveSpeed(MaxMoveSpeed / 2.0f);
@@ -201,6 +201,14 @@ void APPMonsterBase::SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigat
 		GetWorldTimerManager().SetTimer(FireStopHandle, FTimerDelegate::CreateLambda([this]() {
 			GetWorldTimerManager().ClearTimer(Firehandle);
 			}), 2.0f, false);
+		break;
+	}
+	case EPPDamageType::Explod:
+	{
+		FVector tV = GetActorLocation() - ExplodLocation;
+		tV.Normalize();
+
+		GetCharacterMovement()->AddImpulse(tV * 80000.0f);
 		break;
 	}
 	default:
