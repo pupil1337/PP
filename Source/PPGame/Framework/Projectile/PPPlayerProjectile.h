@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "PPGame/Framework/Projectile/PPProjectileBase.h"
-#include "PPPlayerProjectile1.generated.h"
+#include "PPPlayerProjectile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PPGAME_API APPPlayerProjectile1 : public APPProjectileBase
+class PPGAME_API APPPlayerProjectile : public APPProjectileBase
 {
 	GENERATED_BODY()
 	
