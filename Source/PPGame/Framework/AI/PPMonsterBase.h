@@ -103,5 +103,9 @@ private:
 	FTimerHandle PoisonHandle;
 	UPROPERTY()
 	FTimerHandle PoisonStopHandle;
+	UPROPERTY()
+	FTimerHandle Firehandle;
+	UPROPERTY()
+	FTimerHandle FireStopHandle;
 	
 };

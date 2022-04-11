@@ -184,8 +184,21 @@ void APPMonsterBase::SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigat
 		GetWorldTimerManager().SetTimer(PoisonHandle, FTimerDelegate::CreateLambda([this, tInstigator]() {
 			MonsterTakeDamage(10.0f, tInstigator);
 			}), 0.5f, true);
+		GetWorldTimerManager().ClearTimer(PoisonStopHandle);
 		GetWorldTimerManager().SetTimer(PoisonStopHandle, FTimerDelegate::CreateLambda([this]() {
 			GetWorldTimerManager().ClearTimer(PoisonHandle);
+			}), 2.0f, false);
+		break;
+	}
+	case EPPDamageType::Fire:
+	{
+		GetWorldTimerManager().ClearTimer(Firehandle);
+		GetWorldTimerManager().SetTimer(Firehandle, FTimerDelegate::CreateLambda([this, tInstigator]() {
+			MonsterTakeDamage(10.0f, tInstigator);
+			}), 0.5f, true);
+		GetWorldTimerManager().ClearTimer(FireStopHandle);
+		GetWorldTimerManager().SetTimer(FireStopHandle, FTimerDelegate::CreateLambda([this]() {
+			GetWorldTimerManager().ClearTimer(Firehandle);
 			}), 2.0f, false);
 		break;
 	}

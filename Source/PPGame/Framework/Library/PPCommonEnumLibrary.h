@@ -11,5 +11,6 @@ enum class EPPDamageType : uint8
 {
 	Normal,
 	Electric,
-	Poison
+	Poison,
+	Fire
 };
