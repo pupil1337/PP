@@ -23,4 +23,5 @@ public:
 
 protected:
 	virtual void SetEnemy(APPCharacter* InEnemy) override;
+	virtual void Dead(AActor* tInstigator) override;
 };

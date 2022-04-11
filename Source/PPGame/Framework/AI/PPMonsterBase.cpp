@@ -140,6 +140,7 @@ void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 void APPMonsterBase::Multi_CollisionDisable_Implementation()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void APPMonsterBase::Multi_PlayParticleSystem_Implementation(UParticleSystem* ParticleSystem, FVector Location)

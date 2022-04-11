@@ -85,7 +85,7 @@ protected:
 	FName DeBuffSocket;
 
 	virtual void SetEnemy(APPCharacter* InEnemy);
-	void Dead(AActor* tInstigator);
+	virtual void Dead(AActor* tInstigator);
 	bool MonsterIsAlive();
 	void SetMoveSpeed(float Speed);
 	

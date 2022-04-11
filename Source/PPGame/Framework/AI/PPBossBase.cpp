@@ -38,3 +38,16 @@ void APPBossBase::SetEnemy(APPCharacter* InEnemy)
 
 	bUseControllerRotationYaw = false;
 }
+
+void APPBossBase::Dead(AActor* tInstigator)
+{
+	Super::Dead(tInstigator);
+
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		FTimerHandle tHandle;
+		GetWorldTimerManager().SetTimer(tHandle, FTimerDelegate::CreateLambda([this]() {
+			GetWorld()->DestroyActor(this, true);
+			}), 5.0f, false);
+	}
+}
