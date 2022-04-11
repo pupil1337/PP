@@ -14,12 +14,20 @@
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 APPMonsterBase::APPMonsterBase()
 {
 	bReplicates = true;
 	
+}
+
+void APPMonsterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(APPMonsterBase, Health, COND_SimulatedOnly);
 }
 
 void APPMonsterBase::MonsterTakeDamage(float InDamage, AActor* tInstigator)
@@ -55,6 +63,7 @@ void APPMonsterBase::BeginPlay()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		Health = HealthMax;
+		SetMoveSpeed(MaxMoveSpeed);
 	}
 }
 
@@ -114,6 +123,12 @@ bool APPMonsterBase::MonsterIsAlive()
 	return Health > 0.0f;
 }
 
+void APPMonsterBase::SetMoveSpeed(float Speed)
+{
+	MoveSpeed = Speed;
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = Speed;
+}
+
 void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 {
 	if (IsValid(Montage))
@@ -140,6 +155,42 @@ void APPMonsterBase::Multi_PlayDecal_Implementation(UMaterialInterface* DecalMat
 	if (!IsNetMode(NM_DedicatedServer) && IsValid(DecalMat))
 	{
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMat, Size, Location, { -90.0f, 0.0f, 0.0f }, Life);
+	}
+}
+
+void APPMonsterBase::SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator)
+{
+	Multi_SetDamageDeBuff(DamageType);
+
+	switch (DamageType)
+	{
+	case EPPDamageType::Normal:
+		{
+			
+			break;
+		}
+	case EPPDamageType::Electric:
+	{
+		SetMoveSpeed(MaxMoveSpeed / 2.0f);
+		GetWorldTimerManager().ClearTimer(ElectricHandle);
+		GetWorldTimerManager().SetTimer(ElectricHandle, FTimerDelegate::CreateLambda([this]() {
+			SetMoveSpeed(MaxMoveSpeed);
+			}), 1.0f, false);
+		break;
+	}
+	case EPPDamageType::Poison:
+	{
+		GetWorldTimerManager().ClearTimer(PoisonHandle);
+		GetWorldTimerManager().SetTimer(PoisonHandle, FTimerDelegate::CreateLambda([this, tInstigator]() {
+			MonsterTakeDamage(10.0f, tInstigator);
+			}), 0.5f, true);
+		GetWorldTimerManager().SetTimer(PoisonStopHandle, FTimerDelegate::CreateLambda([this]() {
+			GetWorldTimerManager().ClearTimer(PoisonHandle);
+			}), 2.0f, false);
+		break;
+	}
+	default:
+		break;
 	}
 }
 

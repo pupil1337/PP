@@ -35,6 +35,7 @@ class PPGAME_API APPMonsterBase : public ACharacter
 
 public:
 	APPMonsterBase();
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void MonsterTakeDamage(float InDamage, AActor* tInstigator);
 	UBlackboardComponent* GetBlackboardComp();
@@ -51,19 +52,28 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_PlayDecal(UMaterialInterface* DecalMat, FVector Size, FVector Location, float Life);
 
+	void SetDamageDeBuff(EPPDamageType DamageType, AActor* tInstigator);
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_SetDamageDeBuff(EPPDamageType DamageType);
 
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
 	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetHealth() { return Health; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetHealthMax() { return HealthMax; }
 
 protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float HealthMax = 300.0f;
-	UPROPERTY()
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	float Health;
+	UPROPERTY(EditDefaultsOnly)
+	float MaxMoveSpeed = 600.0f;
+	UPROPERTY()
+	float MoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FMonsterSkill> MonsterSkills;
@@ -77,6 +87,7 @@ protected:
 	virtual void SetEnemy(APPCharacter* InEnemy);
 	void Dead(AActor* tInstigator);
 	bool MonsterIsAlive();
+	void SetMoveSpeed(float Speed);
 	
 private:
 	UPROPERTY()
@@ -86,5 +97,11 @@ private:
 
 	UPROPERTY()
 	TMap<EPPDamageType, UParticleSystemComponent*> DeBuffPSMap;
+	UPROPERTY()
+	FTimerHandle ElectricHandle;
+	UPROPERTY()
+	FTimerHandle PoisonHandle;
+	UPROPERTY()
+	FTimerHandle PoisonStopHandle;
 	
 };
