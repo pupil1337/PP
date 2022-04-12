@@ -65,6 +65,9 @@ public:
 	void OnSwitchWeapon(bool Up);
 
 	UFUNCTION()
+	void OnPickup();
+
+	UFUNCTION()
 	void OnDead();
 	UFUNCTION(Server, Reliable)
 	void Server_OnDead();
@@ -73,5 +76,13 @@ public:
 	void OnReSpawn();
 	UFUNCTION(Server, Reliable)
 	void Server_ReSpawn();
+
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<AActor> PickItem;
+	UPROPERTY(BlueprintReadWrite)
+	AActor* PickBase;
+	void EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBase);
+	UFUNCTION(Server, Reliable)
+	void Server_EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBase);
 	
 };

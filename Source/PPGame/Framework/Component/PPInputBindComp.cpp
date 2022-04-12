@@ -66,6 +66,7 @@ void UPPInputBindComp::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		PlayerInputComponent->BindAction("WeaponUp", IE_Pressed, this, &UPPInputBindComp::WeaponUp);
 		PlayerInputComponent->BindAction("WeaponDown", IE_Pressed, this, &UPPInputBindComp::WeaponDown);
 		PlayerInputComponent->BindAction("CameraAction", IE_Released, this, &UPPInputBindComp::CameraReleasedAction);
+		PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &UPPInputBindComp::InteractAction);
 	}
 }
 
@@ -197,6 +198,11 @@ void UPPInputBindComp::WeaponDown()
 		return;
 	}
 	OnChangeWeapon.Broadcast(false);
+}
+
+void UPPInputBindComp::InteractAction()
+{
+	OnInteract.Broadcast();
 }
 
 void UPPInputBindComp::SwitchCameraMode()

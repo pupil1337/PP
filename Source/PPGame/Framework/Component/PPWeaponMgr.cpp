@@ -97,6 +97,7 @@ void UPPWeaponMgr::ChangeControllerRole()
 			tInputBindComp->OnReload.AddUniqueDynamic(this, &UPPWeaponMgr::OnReload);
 			tInputBindComp->OnAim.AddUniqueDynamic(this, &UPPWeaponMgr::OnAimState);
 			tInputBindComp->OnChangeWeapon.AddUniqueDynamic(this, &UPPWeaponMgr::OnSwitchWeapon);
+			tInputBindComp->OnInteract.AddUniqueDynamic(this, &UPPWeaponMgr::OnPickup);
 		}
 
 		UPPAttributeComp* tAttrComp = Cast<UPPAttributeComp>(OwnerPawn->GetComponentByClass(UPPAttributeComp::StaticClass()));
@@ -205,6 +206,53 @@ void UPPWeaponMgr::OnSwitchWeapon(bool Up)
 			Equip(WeaponList[CurrIndex], false);
 		}
 	}
+}
+
+void UPPWeaponMgr::OnPickup()
+{
+	if (IsValid(OwnerPawn))
+	{
+		if (OwnerPawn->GetLocalRole() == ROLE_Authority)
+		{
+			EquipAndDele(PickItem, PickBase);
+		}
+		else
+		{
+			Server_EquipAndDele(PickItem, PickBase);
+		}
+	}
+}
+
+void UPPWeaponMgr::EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBase)
+{
+	if (IsValid(InPickItem))
+	{
+		UClass* tClass = InPickItem.Get();
+		if (IsValid(tClass))
+		{
+			FActorSpawnParameters tParame;
+			tParame.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			tParame.Owner = OwnerPawn;
+			// 武器
+			APPWeaponBase* tWeapon = Cast<APPWeaponBase>(GetWorld()->SpawnActor<APPWeaponBase>(tClass, tParame));
+			if (IsValid(tWeapon))
+			{
+				tWeapon->SetActorHiddenInGame(true);
+				WeaponList.Add(tWeapon);
+				//Equip(tWeapon, true);
+			}
+		}
+	}
+
+	if (IsValid(InPickBase))
+	{
+		OwnerPawn->GetWorld()->DestroyActor(InPickBase, true);
+	}
+}
+
+void UPPWeaponMgr::Server_EquipAndDele_Implementation(TSubclassOf<AActor> InPickItem, AActor* InPickBase)
+{
+	EquipAndDele(InPickItem, InPickBase);
 }
 
 void UPPWeaponMgr::OnDead()
