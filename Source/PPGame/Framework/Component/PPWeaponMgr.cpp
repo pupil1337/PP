@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/Weapon/PPWeaponBase.h"
+#include "PPGame/Framework/Projectile/PPProjectileBase.h"
 
 
 UPPWeaponMgr::UPPWeaponMgr()
@@ -22,6 +23,7 @@ void UPPWeaponMgr::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME_CONDITION(UPPWeaponMgr, CurrWeapon, COND_SimulatedOnly);
 	DOREPLIFETIME_CONDITION(UPPWeaponMgr, WeaponList, COND_AutonomousOnly);
+	DOREPLIFETIME_CONDITION(UPPWeaponMgr, WeaponClassList, COND_AutonomousOnly);
 }
 
 void UPPWeaponMgr::BeginPlay()
@@ -225,6 +227,7 @@ void UPPWeaponMgr::OnPickup()
 
 void UPPWeaponMgr::EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBase)
 {
+	bool bSuccess = false;
 	if (IsValid(InPickItem))
 	{
 		UClass* tClass = InPickItem.Get();
@@ -234,17 +237,29 @@ void UPPWeaponMgr::EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBa
 			tParame.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			tParame.Owner = OwnerPawn;
 			// 武器
-			APPWeaponBase* tWeapon = Cast<APPWeaponBase>(GetWorld()->SpawnActor<APPWeaponBase>(tClass, tParame));
-			if (IsValid(tWeapon))
+			if (tClass->IsChildOf<APPWeaponBase>())
 			{
-				tWeapon->SetActorHiddenInGame(true);
-				WeaponList.Add(tWeapon);
-				//Equip(tWeapon, true);
+				if (!WeaponClassList.Contains(InPickItem))
+				{
+					APPWeaponBase* tWeapon = Cast<APPWeaponBase>(GetWorld()->SpawnActor<APPWeaponBase>(tClass, tParame));
+					if (IsValid(tWeapon))
+					{
+						tWeapon->SetActorHiddenInGame(true);
+						WeaponList.Add(tWeapon);
+						WeaponClassList.Add((TSubclassOf<APPWeaponBase>)InPickItem);
+						bSuccess = true;
+					}
+				}
+			}
+			// 炮弹
+			else if (tClass->IsChildOf<APPProjectileBase>())
+			{
+
 			}
 		}
 	}
 
-	if (IsValid(InPickBase))
+	if (IsValid(InPickBase) && bSuccess)
 	{
 		OwnerPawn->GetWorld()->DestroyActor(InPickBase, true);
 	}

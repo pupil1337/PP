@@ -26,7 +26,7 @@ public:
 	virtual void OnUnregister() override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(Replicated, EditDefaultsOnly)
 	TArray<TSubclassOf<APPWeaponBase> > WeaponClassList;
 	
 	UPROPERTY(Replicated)
