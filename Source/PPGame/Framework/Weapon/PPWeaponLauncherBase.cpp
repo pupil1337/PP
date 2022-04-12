@@ -39,3 +39,14 @@ void APPWeaponLauncherBase::Server_SpawnProjectile_Implementation(FVector Locati
 		GetWorld()->SpawnActor<APPProjectileBase>(tSubClass.Get(), Location, Rotation, tParams);
 	}
 }
+
+void APPWeaponLauncherBase::ProjectileUpPro(TSubclassOf<APPProjectileBase> InBulletClass)
+{
+	for (auto& it: BulletClass)
+	{
+		if (it.BulletClass == InBulletClass)
+		{
+			it.pro += 0.2f;
+		}
+	}
+}

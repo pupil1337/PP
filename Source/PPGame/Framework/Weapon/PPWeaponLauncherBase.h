@@ -33,6 +33,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_SpawnProjectile(FVector Location, FRotator Rotation);
 
+	void ProjectileUpPro(TSubclassOf<APPProjectileBase> InBulletClass);
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FSpawnProjectile> BulletClass;

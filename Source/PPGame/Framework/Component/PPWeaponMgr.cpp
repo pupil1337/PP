@@ -10,6 +10,7 @@
 #include "PPGame/Framework/PPCharacter.h"
 #include "PPGame/Framework/Weapon/PPWeaponBase.h"
 #include "PPGame/Framework/Projectile/PPProjectileBase.h"
+#include "PPGame/Framework/Weapon/PPWeaponLauncherBase.h"
 
 
 UPPWeaponMgr::UPPWeaponMgr()
@@ -254,7 +255,15 @@ void UPPWeaponMgr::EquipAndDele(TSubclassOf<AActor> InPickItem, AActor* InPickBa
 			// 炮弹
 			else if (tClass->IsChildOf<APPProjectileBase>())
 			{
-
+				for (auto& it: WeaponList)
+				{
+					APPWeaponLauncherBase* tLauncher = Cast<APPWeaponLauncherBase>(it);
+					if (IsValid(tLauncher))
+					{
+						tLauncher->ProjectileUpPro((TSubclassOf<APPProjectileBase>)InPickItem);
+						bSuccess = true;
+					}
+				}
 			}
 		}
 	}
