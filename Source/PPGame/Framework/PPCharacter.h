@@ -9,6 +9,8 @@
 
 class UPPCameraAnimInstance;
 class UPPPlayerAnimInstance;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 /**
  * 
@@ -110,6 +112,20 @@ public:
 	void Server_SetGait(const EPPGait NewRotationMode, bool bForce);
 	UFUNCTION()
 	void OnRep_Gait(EPPGait PreGait);
+
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ShiftPS;
+	UPROPERTY()
+	UParticleSystemComponent* ShiftPSComp;
+	UPROPERTY()
+	FTimerHandle ShiftHandle;
+	UFUNCTION()
+	void OnShift();
+	UFUNCTION(Server, Reliable)
+	void Server_OnShift();
+	void PlayShiftPS();
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_PlayShiftPS();
 
 	/** Other **/
 	void UpdateCharacterMovement();

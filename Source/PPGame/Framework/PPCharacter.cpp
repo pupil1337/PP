@@ -5,8 +5,12 @@
 
 #include "Animation/PPCameraAnimInstance.h"
 #include "Animation/PPPlayerAnimInstance.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PPGame/Framework/Component/PPInputBindComp.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 const FName NAME_FP_Camera(TEXT("FP_Camera"));
 
@@ -40,6 +44,14 @@ void APPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (IsLocallyControlled())
+	{
+		UPPInputBindComp* tInputBindComp = Cast<UPPInputBindComp>(GetComponentByClass(UPPInputBindComp::StaticClass()));
+		if (IsValid(tInputBindComp))
+		{
+			tInputBindComp->OnShift.AddUniqueDynamic(this, &APPCharacter::OnShift);
+		}
+	}
 }
 
 void APPCharacter::Tick(float DeltaSeconds)
@@ -62,6 +74,11 @@ void APPCharacter::Tick(float DeltaSeconds)
 				Server_SetAimPitch(AimPitch);
 			}
 		}
+	}
+
+	if (GetLocalRole() == ROLE_Authority)
+	{
+
 	}
 }
 
@@ -264,6 +281,60 @@ void APPCharacter::UpdateCharacterMovement()
 				SetGait(EPPGait::Idle);
 			}
 		}
+	}
+}
+
+void APPCharacter::OnShift()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		float Value = 8000.0f;
+		if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Falling)
+		{
+			Value = 1000.0f;
+		}
+		GetCharacterMovement()->AddImpulse(GetActorForwardVector() * Value, true);
+		Multi_PlayShiftPS();
+	}
+	else if (GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		Server_OnShift();
+		PlayShiftPS();
+	}
+}
+
+void APPCharacter::Server_OnShift_Implementation()
+{
+	OnShift();
+}
+
+void APPCharacter::PlayShiftPS()
+{
+	if (IsValid(ShiftPS))
+	{
+		FTimerDelegate Func = FTimerDelegate::CreateLambda([this]() {
+			if (IsValid(ShiftPSComp))
+			{
+				if (ShiftPSComp->IsActive())
+				{
+					ShiftPSComp->Deactivate();
+				}
+				ShiftPSComp->DestroyComponent(true);
+			}
+		});
+
+		Func.ExecuteIfBound();
+		ShiftPSComp = UGameplayStatics::SpawnEmitterAttached(ShiftPS, GetMesh(), NAME_None, { 0.0f, 20.0f, 50.0f }, { 0.0f, -90.0f, 0.0f });
+		GetWorldTimerManager().ClearTimer(ShiftHandle);
+		GetWorldTimerManager().SetTimer(ShiftHandle, Func, 0.2f, false);
+	}
+}
+
+void APPCharacter::Multi_PlayShiftPS_Implementation()
+{
+	if (!IsNetMode(NM_DedicatedServer) && GetLocalRole() != ROLE_AutonomousProxy)
+	{
+		PlayShiftPS();
 	}
 }
 

@@ -11,6 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAim, bool, Op);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWeapon, bool, Up);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnReload, bool, Start);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInteract);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShift);
 
 class UInputComponent;
 
@@ -29,6 +30,7 @@ public:
 	FOnChangeWeapon OnChangeWeapon;
 	FOnReload OnReload;
 	FOnInteract OnInteract;
+	FOnShift OnShift;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	UFUNCTION()
@@ -59,6 +61,8 @@ public:
 	void WeaponDown();
 	UFUNCTION()
 	void InteractAction();
+	UFUNCTION()
+	void ShiftAction();
 
 protected:
 	UFUNCTION()
