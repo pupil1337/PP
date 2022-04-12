@@ -324,7 +324,7 @@ void APPCharacter::PlayShiftPS()
 		});
 
 		Func.ExecuteIfBound();
-		ShiftPSComp = UGameplayStatics::SpawnEmitterAttached(ShiftPS, GetMesh(), NAME_None, { 0.0f, 20.0f, 50.0f }, { 0.0f, -90.0f, 0.0f });
+		ShiftPSComp = UGameplayStatics::SpawnEmitterAttached(ShiftPS, GetMesh(), NAME_None, { 0.0f, 20.0f, 20.0f }, { 0.0f, -90.0f, 0.0f });
 		GetWorldTimerManager().ClearTimer(ShiftHandle);
 		GetWorldTimerManager().SetTimer(ShiftHandle, Func, 0.2f, false);
 	}
