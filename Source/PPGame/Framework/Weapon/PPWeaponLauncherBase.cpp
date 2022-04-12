@@ -5,6 +5,7 @@
 
 #include "PPGame/Framework/Projectile/PPProjectileBase.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 
 bool APPWeaponLauncherBase::Fire(bool Op)
 {
@@ -22,5 +23,19 @@ void APPWeaponLauncherBase::Server_SpawnProjectile_Implementation(FVector Locati
 	FActorSpawnParameters tParams;
 	tParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	tParams.Owner = OwnerPawn;
-	GetWorld()->SpawnActor<APPProjectileBase>(BulletClass.Get(), Location, Rotation, tParams);
+
+	bool bSuccess = false;
+	for (auto& it: BulletClass)
+	{
+		if (UKismetMathLibrary::RandomFloat() <= it.pro)
+		{
+			GetWorld()->SpawnActor<APPProjectileBase>(it.BulletClass.Get(), Location, Rotation, tParams);
+			bSuccess = true;
+		}
+	}
+	if (!bSuccess)
+	{
+		const TSubclassOf<APPProjectileBase>& tSubClass = BulletClass[UKismetMathLibrary::RandomInteger(BulletClass.Num())].BulletClass;
+		GetWorld()->SpawnActor<APPProjectileBase>(tSubClass.Get(), Location, Rotation, tParams);
+	}
 }

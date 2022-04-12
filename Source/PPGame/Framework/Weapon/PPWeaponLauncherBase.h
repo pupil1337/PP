@@ -8,6 +8,17 @@
 
 class APPProjectileBase;
 
+USTRUCT()
+struct FSpawnProjectile
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APPProjectileBase> BulletClass;
+	UPROPERTY(EditDefaultsOnly)
+	float pro = 0.0f;
+};
+
 /**
  * 
  */
@@ -24,6 +35,5 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<APPProjectileBase> BulletClass;
-	
+	TArray<FSpawnProjectile> BulletClass;
 };
