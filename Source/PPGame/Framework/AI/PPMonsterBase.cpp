@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "PPGame/Framework/AI/PPGLaDOS.h"
 
 
 APPMonsterBase::APPMonsterBase()
@@ -67,17 +68,25 @@ void APPMonsterBase::BeginPlay()
 	}
 }
 
+void APPMonsterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}
+
 void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)
 {
-	Enemy = InEnemy;
-
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (IsValid(AIController))
+	if (IsValid(InEnemy))
 	{
-		UBlackboardComponent* tBBComp = AIController->GetBlackboardComponent();
-		if (IsValid(tBBComp))
+		Enemy = InEnemy;
+
+		AAIController* AIController = Cast<AAIController>(GetController());
+		if (IsValid(AIController))
 		{
-			tBBComp->SetValue<UBlackboardKeyType_Object>(TEXT("Enemy"), InEnemy);
+			UBlackboardComponent* tBBComp = AIController->GetBlackboardComponent();
+			if (IsValid(tBBComp))
+			{
+				tBBComp->SetValue<UBlackboardKeyType_Object>(TEXT("Enemy"), InEnemy);
+			}
 		}
 	}
 }
@@ -115,6 +124,11 @@ void APPMonsterBase::Dead(AActor* tInstigator)
 				tPlayerState->SetScore(tPlayerState->GetScore() + 1);
 			}
 		}
+	}
+
+	if (IsValid(GLaDOS))
+	{
+		GLaDOS->OnMonsterDeath(this);
 	}
 }
 

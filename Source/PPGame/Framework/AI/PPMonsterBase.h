@@ -11,6 +11,7 @@ class APPCharacter;
 class UAnimMontage;
 class UBlackboardComponent;
 class UParticleSystem;
+class APPGLaDOS;
 
 USTRUCT()
 struct FMonsterSkill
@@ -56,16 +57,20 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_SetDamageDeBuff(EPPDamageType DamageType);
 
+	virtual void SetEnemy(APPCharacter* InEnemy);
+
 	FORCEINLINE const TArray<FMonsterSkill>& GetMonsterSkills() { return MonsterSkills; }
 	FORCEINLINE APPCharacter* GetEnemy() { return Enemy; }
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetHealth() { return Health; }
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetHealthMax() { return HealthMax; }
+	FORCEINLINE void SetGLaDOS(APPGLaDOS* InGLaDOS) { GLaDOS = InGLaDOS; }
 
 protected:
 	virtual void BeginPlay() override;
-	
+	virtual void PossessedBy(AController* NewController);
+
 	UPROPERTY(EditDefaultsOnly)
 	float HealthMax = 300.0f;
 	UPROPERTY(Replicated, BlueprintReadOnly)
@@ -84,7 +89,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FName DeBuffSocket;
 
-	virtual void SetEnemy(APPCharacter* InEnemy);
 	virtual void Dead(AActor* tInstigator);
 	bool MonsterIsAlive();
 	void SetMoveSpeed(float Speed);
@@ -92,6 +96,8 @@ protected:
 private:
 	UPROPERTY()
 	APPCharacter* Enemy = nullptr;
+	UPROPERTY()
+	APPGLaDOS* GLaDOS = nullptr;
 
 	bool bCanTakeDamage = true;
 
