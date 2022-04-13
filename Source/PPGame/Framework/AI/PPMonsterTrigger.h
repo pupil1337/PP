@@ -18,7 +18,11 @@ class PPGAME_API APPMonsterTrigger : public ATriggerBox
 {
 	GENERATED_BODY()
 
+public:
+	APPMonsterTrigger();
+
 protected:
+	virtual void Tick(float DeltaSeconds) override;
 	UFUNCTION(BlueprintCallable)
 	void OnPlayerIn(APPCharacter* InPlayer);
 	UFUNCTION(BlueprintCallable)
@@ -34,5 +38,6 @@ protected:
 	
 	UPROPERTY()
 	TArray<APPCharacter*> AllInPlayer;
+	float SpawnTimer;
 
 };

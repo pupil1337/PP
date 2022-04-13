@@ -8,6 +8,30 @@
 #include "NavigationSystem.h"
 
 
+APPMonsterTrigger::APPMonsterTrigger()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void APPMonsterTrigger::Tick(float DeltaSeconds)
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		SpawnTimer += DeltaSeconds;
+		if (SpawnTimer > 1.0f)
+		{
+			SpawnTimer = 0.0f;
+			for (auto& it: AllInPlayer)
+			{
+				if (IsValid(it))
+				{
+					OnSpawnMonster(it);
+				}
+			}
+		}
+	}
+}
+
 void APPMonsterTrigger::OnPlayerIn(APPCharacter* InPlayer)
 {
 	AllInPlayer.Add(InPlayer);
@@ -32,7 +56,7 @@ void APPMonsterTrigger::OnSpawnMonster(APPCharacter* TriggerPlayer)
 		if (IsValid(NavSys))
 		{
 			FNavLocation tNavLocation;
-			if (NavSys->GetRandomReachablePointInRadius(tV, 1000.0f, tNavLocation))
+			if (NavSys->GetRandomReachablePointInRadius(tV, 2000.0f, tNavLocation))
 			{
 				tV = tNavLocation.Location;
 			}
