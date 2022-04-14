@@ -17,15 +17,18 @@ void APPMonsterTrigger::Tick(float DeltaSeconds)
 {
 	if (GetLocalRole() == ROLE_Authority)
 	{
-		SpawnTimer += DeltaSeconds;
-		if (SpawnTimer > 1.0f)
+		if (AllInPlayer.Num() > 0)
 		{
-			SpawnTimer = 0.0f;
-			for (auto& it: AllInPlayer)
+			SpawnTimer += DeltaSeconds;
+			if (SpawnTimer > Interval)
 			{
-				if (IsValid(it))
+				SpawnTimer = 0.0f;
+				for (auto& it : AllInPlayer)
 				{
-					OnSpawnMonster(it);
+					if (IsValid(it))
+					{
+						OnSpawnMonster(it);
+					}
 				}
 			}
 		}
@@ -61,6 +64,7 @@ void APPMonsterTrigger::OnSpawnMonster(APPCharacter* TriggerPlayer)
 				tV = tNavLocation.Location;
 			}
 		}
+		tV.Z += 100.0f;
 		TSubclassOf<APPMonsterBase> tMonsterSubclass = MonsterClass[UKismetMathLibrary::RandomInteger(MonsterClass.Num())];
 		GLaDOS->OnMonsterSpawn(tMonsterSubclass, tV, TriggerPlayer);
 	}

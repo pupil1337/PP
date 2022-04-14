@@ -35,6 +35,8 @@ protected:
 	APPGLaDOS* GLaDOS;
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<APPMonsterBase> > MonsterClass;
+	UPROPERTY(EditAnywhere)
+	float Interval = 1.0f;
 	
 	UPROPERTY()
 	TArray<APPCharacter*> AllInPlayer;
