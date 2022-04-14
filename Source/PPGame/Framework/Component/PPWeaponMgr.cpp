@@ -68,15 +68,14 @@ void UPPWeaponMgr::PPInitComponent()
 	
 	if (GetOwnerRole() == ROLE_AutonomousProxy)
 	{
-		static FTimerHandle tHandle;
-		GetWorld()->GetTimerManager().SetTimer(tHandle, FTimerDelegate::CreateLambda([&]()
+		GetWorld()->GetTimerManager().SetTimer(InitEquipHandle, FTimerDelegate::CreateLambda([&]()
 		{
 			if (WeaponList.Num() > 0 && IsValid(WeaponList[0]))
 			{
 				Equip(WeaponList[0], true);
-				GetWorld()->GetTimerManager().ClearTimer(tHandle);
+				GetWorld()->GetTimerManager().ClearTimer(InitEquipHandle);
 			}
-		}), 0.1f, true);
+		}), 0.2f, true);
 	}
 	else if (GetOwnerRole() == ROLE_Authority && GetNetMode() != NM_DedicatedServer)
 	{

@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<EPPOverlayState, UAnimMontage*> ChangeWeaponMontages;
 	
+	UPROPERTY()
+	FTimerHandle InitEquipHandle;
 	UFUNCTION()
 	void OnRep_CurrWeapon(APPWeaponBase* PreWeapon);
 	UPROPERTY(ReplicatedUsing=OnRep_CurrWeapon)
