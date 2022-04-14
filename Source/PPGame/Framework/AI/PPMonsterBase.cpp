@@ -41,6 +41,15 @@ void APPMonsterBase::MonsterTakeDamage(float InDamage, AActor* tInstigator)
 			if (IsValid(tPlayer))
 			{
 				Health -= InDamage;
+				if (PlayerDamageMap.Contains(tPlayer))
+				{
+					PlayerDamageMap[tPlayer] += InDamage;
+				}
+				else
+				{
+					PlayerDamageMap.Add(tPlayer, InDamage);
+				}
+
 				if (Health <= 0.0f)
 				{
 					Health = 0.0f;
@@ -65,6 +74,24 @@ void APPMonsterBase::BeginPlay()
 	{
 		Health = HealthMax;
 		SetMoveSpeed(MaxMoveSpeed);
+		GetWorldTimerManager().SetTimer(SwitchEnemyHandle, FTimerDelegate::CreateLambda([this]() {
+			if (PlayerDamageMap.Num() > 0)
+			{
+				APPCharacter* tPlayer = PlayerDamageMap.begin()->Key;
+				for (auto& it: PlayerDamageMap)
+				{
+					if (IsValid(it.Key))
+					{
+						if (it.Value > PlayerDamageMap[tPlayer])
+						{
+							tPlayer = it.Key;
+						}
+					}
+					it.Value = 0.0f;
+				}
+				SetEnemy(tPlayer);
+			}
+			}), 3.0f, true);
 	}
 
 	if (!IsNetMode(NM_DedicatedServer))

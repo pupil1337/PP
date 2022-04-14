@@ -98,11 +98,15 @@ private:
 	APPCharacter* Enemy = nullptr;
 	UPROPERTY()
 	APPGLaDOS* GLaDOS = nullptr;
+	UPROPERTY()
+	TMap<APPCharacter*, float> PlayerDamageMap;
 
 	bool bCanTakeDamage = true;
 
 	UPROPERTY()
 	TMap<EPPDamageType, UParticleSystemComponent*> DeBuffPSMap;
+	UPROPERTY()
+	FTimerHandle SwitchEnemyHandle;
 	UPROPERTY()
 	FTimerHandle ElectricHandle;
 	UPROPERTY()
