@@ -24,6 +24,7 @@ public:
 
 	void OnHealth(float NewHealth);
 	void OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo);
+	void OnMonster(bool Spawn);
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

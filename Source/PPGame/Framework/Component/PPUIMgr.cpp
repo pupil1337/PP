@@ -36,3 +36,11 @@ void UPPUIMgr::OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo)
 		Panel->OnWeapon(WeaponIndex, CurrAmmo, SpareAmmo);
 	}
 }
+
+void UPPUIMgr::OnMonster(bool Spawn)
+{
+	if (IsValid(Panel))
+	{
+		Panel->OnMonster(Spawn);
+	}
+}

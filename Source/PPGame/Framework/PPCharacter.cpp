@@ -11,6 +11,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PPGame/Framework/Component/PPUIMgr.h"
 
 const FName NAME_FP_Camera(TEXT("FP_Camera"));
 
@@ -335,6 +336,15 @@ void APPCharacter::Multi_PlayShiftPS_Implementation()
 	if (!IsNetMode(NM_DedicatedServer) && GetLocalRole() != ROLE_AutonomousProxy)
 	{
 		PlayShiftPS();
+	}
+}
+
+void APPCharacter::OnMonsterEvent(bool Spawn)
+{
+	UPPUIMgr* tComp = Cast<UPPUIMgr>(GetComponentByClass(UPPUIMgr::StaticClass()));
+	if (IsValid(tComp))
+	{
+		tComp->OnMonster(Spawn);
 	}
 }
 

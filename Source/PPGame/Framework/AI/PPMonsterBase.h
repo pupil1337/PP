@@ -45,7 +45,7 @@ public:
 	void Multi_PlayAnimMontage(UAnimMontage* Montage);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void Multi_CollisionDisable();
+	void Multi_Dead();
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_PlayParticleSystem(UParticleSystem* ParticleSystem, FVector Location);

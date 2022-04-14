@@ -21,4 +21,6 @@ public:
 	void OnHealth(float NewHealth);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeapon(int WeaponIndex, int CurrAmmo, int SpareAmmo);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMonster(bool Spawn);
 };

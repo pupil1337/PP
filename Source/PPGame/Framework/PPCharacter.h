@@ -134,6 +134,7 @@ public:
 	FORCEINLINE float GetCameraThirdFOV() { return ThirdPersonFOV; }
 	UFUNCTION(Server, Unreliable)
 	void Server_SetAimPitch(float NewAimPitch);
+	void OnMonsterEvent(bool Spawn);
 	
 protected:
 

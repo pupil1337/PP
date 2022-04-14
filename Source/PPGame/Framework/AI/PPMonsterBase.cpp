@@ -66,6 +66,19 @@ void APPMonsterBase::BeginPlay()
 		Health = HealthMax;
 		SetMoveSpeed(MaxMoveSpeed);
 	}
+
+	if (!IsNetMode(NM_DedicatedServer))
+	{
+		APlayerController* tPC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (IsValid(tPC))
+		{
+			APPCharacter* tPlayer = Cast<APPCharacter>(tPC->GetPawn());
+			if (IsValid(tPlayer))
+			{
+				tPlayer->OnMonsterEvent(true);
+			}
+		}
+	}
 }
 
 void APPMonsterBase::PossessedBy(AController* NewController)
@@ -106,7 +119,7 @@ void APPMonsterBase::Dead(AActor* tInstigator)
 		}
 	}
 	
-	Multi_CollisionDisable();
+	Multi_Dead();
 	GetCharacterMovement()->DisableMovement();
 	Multi_PlayAnimMontage(DeadMontage);
 	DetachFromControllerPendingDestroy();
@@ -151,10 +164,24 @@ void APPMonsterBase::Multi_PlayAnimMontage_Implementation(UAnimMontage* Montage)
 	}
 }
 
-void APPMonsterBase::Multi_CollisionDisable_Implementation()
+void APPMonsterBase::Multi_Dead_Implementation()
 {
+	// 关闭碰撞
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (!IsNetMode(NM_DedicatedServer))
+	{
+		APlayerController* tPC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (IsValid(tPC))
+		{
+			APPCharacter* tPlayer = Cast<APPCharacter>(tPC->GetPawn());
+			if (IsValid(tPlayer))
+			{
+				tPlayer->OnMonsterEvent(false);
+			}
+		}
+	}
 }
 
 void APPMonsterBase::Multi_PlayParticleSystem_Implementation(UParticleSystem* ParticleSystem, FVector Location)
