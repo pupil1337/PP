@@ -18,6 +18,10 @@ void APPGLaDOS::BeginPlay()
 
 void APPGLaDOS::OnMonsterSpawn(TSubclassOf<APPMonsterBase> MonsterClass, FVector Location, APPCharacter* TriggerPlayer)
 {
+	if (AllMonsters.Num() > 30)
+	{
+		return;
+	}
 	if (IsValid(MonsterClass))
 	{
 		UClass* tClass = MonsterClass.Get();
