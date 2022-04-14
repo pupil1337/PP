@@ -69,7 +69,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void PossessedBy(AController* NewController);
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void Destroyed() override;
 
 	UPROPERTY(EditDefaultsOnly)
 	float HealthMax = 300.0f;

@@ -74,15 +74,22 @@ void APPMonsterBase::BeginPlay()
 	{
 		Health = HealthMax;
 		SetMoveSpeed(MaxMoveSpeed);
+		PlayerDamageMap.Empty();
 		GetWorldTimerManager().SetTimer(SwitchEnemyHandle, FTimerDelegate::CreateLambda([this]() {
 			if (PlayerDamageMap.Num() > 0)
 			{
-				APPCharacter* tPlayer = PlayerDamageMap.begin()->Key;
+				bool bFirst = true;
+				APPCharacter* tPlayer = nullptr;
 				for (auto& it: PlayerDamageMap)
 				{
 					if (IsValid(it.Key))
 					{
-						if (it.Value > PlayerDamageMap[tPlayer])
+						if (bFirst)
+						{
+							bFirst = false;
+							tPlayer = it.Key;
+						}
+						else if (it.Value > PlayerDamageMap[tPlayer])
 						{
 							tPlayer = it.Key;
 						}
@@ -111,6 +118,23 @@ void APPMonsterBase::BeginPlay()
 void APPMonsterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+}
+
+void APPMonsterBase::Destroyed()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		GetWorldTimerManager().ClearTimer(SwitchEnemyHandle);
+	}
+
+	if (!IsNetMode(NM_DedicatedServer))
+	{
+		GetWorldTimerManager().ClearTimer(ElectricHandle);
+		GetWorldTimerManager().ClearTimer(PoisonHandle);
+		GetWorldTimerManager().ClearTimer(PoisonStopHandle);
+		GetWorldTimerManager().ClearTimer(Firehandle);
+		GetWorldTimerManager().ClearTimer(FireStopHandle);
+	}
 }
 
 void APPMonsterBase::SetEnemy(APPCharacter* InEnemy)
