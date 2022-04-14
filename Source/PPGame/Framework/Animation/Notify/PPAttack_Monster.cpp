@@ -24,7 +24,7 @@ void UPPAttack_Monster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 				for (auto& it: FoundArray)
 				{
 					APPCharacter* tPlayer = Cast<APPCharacter>(it);
-					if (IsValid(tPlayer) && FVector::Distance(tMonster->GetActorLocation(), tPlayer->GetActorLocation()) < 200.0f)
+					if (IsValid(tPlayer) && FVector::Distance(tMonster->GetActorLocation(), tPlayer->GetActorLocation()) < 300.0f)
 					{
 						UPPAttributeComp* tComp = Cast<UPPAttributeComp>(tPlayer->GetComponentByClass(UPPAttributeComp::StaticClass()));
 						if (IsValid(tComp))
