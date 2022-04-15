@@ -3,6 +3,11 @@
 .vs
 PPGame.sln
 
+#VSCode
+.vscode
+.ignore
+PPGame.code-workspace
+
 # Project
 Binaries
 Build
