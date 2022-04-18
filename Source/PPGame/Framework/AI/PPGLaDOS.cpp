@@ -4,6 +4,7 @@
 #include "PPGLaDOS.h"
 #include "PPGame/Framework/AI/PPMonsterBase.h"
 #include "PPGame/Framework/PPCharacter.h"
+#include "PPGame/Framework/AI/PPBossBase.h"
 
 APPGLaDOS::APPGLaDOS()
 {
@@ -18,7 +19,7 @@ void APPGLaDOS::BeginPlay()
 
 void APPGLaDOS::OnMonsterSpawn(TSubclassOf<APPMonsterBase> MonsterClass, FVector Location, APPCharacter* TriggerPlayer)
 {
-	if (AllMonsters.Num() > 30)
+	if (AllMonsters.Num() > 30 || MonsterNeedKill <= 0)
 	{
 		return;
 	}
@@ -42,5 +43,19 @@ void APPGLaDOS::OnMonsterDeath(APPMonsterBase* Monster)
 	if (AllMonsters.Contains(Monster))
 	{
 		AllMonsters.Remove(Monster);
+
+		--MonsterNeedKill;
+		if (MonsterNeedKill == 0 && IsValid(BossClass))
+		{
+			UClass* tClass = BossClass.Get();
+			if (IsValid(tClass))
+			{
+				FActorSpawnParameters tParam;
+				tParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				APPBossBase* tMonster = GetWorld()->SpawnActor<APPBossBase>(tClass, GetActorLocation(), FRotator(ForceInit), tParam);
+				tMonster->SetGLaDOS(this);
+				AllMonsters.Add(tMonster);
+			}
+		}
 	}
 }

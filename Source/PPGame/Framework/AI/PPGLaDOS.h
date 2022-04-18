@@ -8,6 +8,7 @@
 
 class APPMonsterBase;
 class APPCharacter;
+class APPBossBase;
 
 UCLASS()
 class PPGAME_API APPGLaDOS : public AActor
@@ -22,6 +23,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	int MonsterNeedKill = 30;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APPBossBase> BossClass;
 
 private:
 	UPROPERTY()
